@@ -59,7 +59,6 @@
 @property (nonatomic, strong) ZFAdView *adviseView;
 
 @property (nonatomic, assign) BOOL showBanner;
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end
 
@@ -88,9 +87,7 @@
     if(ZFAdManager.shared.ad.close){
         closeTime = ZFAdManager.shared.ad.close.intValue;
     }
-    NSLog(@"🐷横屏广告准备 %d 后消失",closeTime);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(closeTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        NSLog(@"🐷横屏广告消失准备回调");
         if(![ZFAdManager.shared.ad sub]){
             self.adviseView.alpha = 0;
             [self ht_contiuneAutoShow];
@@ -103,10 +100,8 @@
     if(ZFAdManager.shared.ad.secs){
         time = ZFAdManager.shared.ad.secs.intValue;
     }
-    NSLog(@"🐷横屏广告已经消失准备%d后继续显示",time);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if(![ZFAdManager.shared.ad sub]){
-            NSLog(@"🐷横屏广告继续显示");
             self.adviseView.alpha = 1;
             [self ht_showAutoClose];
         }
@@ -121,7 +116,6 @@
     [super setHidden:hidden];
     if(!hidden){
         if(![ZFAdManager.shared.ad sub] && !self.hasAd){
-            NSLog(@"🐷横屏加入视图");
             [self addSubview:self.adviseView];
             [self.adviseView mas_remakeConstraints:^(MASConstraintMaker *make) {
                 make.size.mas_equalTo(CGSizeMake(320, 50));
@@ -365,20 +359,9 @@
         make.centerY.equalTo(self.backBtn);
     }];
     [self.topStasckView layoutIfNeeded];
-    [self.adBTN layoutIfNeeded];
-    if(!self.gradientLayer && self.adBTN.bounds.size.width) {
-        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-        gradientLayer.frame = self.adBTN.bounds;
-        NSArray *cgColors = @[UIColorFromHex(0xECCD6E), UIColorFromHex(0xFAE093)];
-        gradientLayer.colors = cgColors;
-        gradientLayer.startPoint = CGPointMake(0, 0);
-        gradientLayer.endPoint = CGPointMake(1, 0);
-        gradientLayer.locations = @[@0, @1];
-        self.gradientLayer = gradientLayer;
-    }
-    [self.adBTN.layer insertSublayer:self.gradientLayer atIndex:0];
     self.adBTN.layer.cornerRadius = self.adBTN.frame.size.height / 2.0;
     self.adBTN.layer.masksToBounds = YES;
+    self.adBTN.backgroundColor = UIColorFromHex(0xECCD6E);
     
     min_x = self.backBtn.zf_right + 5;
     min_y = 0;

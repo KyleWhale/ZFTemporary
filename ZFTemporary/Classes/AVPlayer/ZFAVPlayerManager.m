@@ -147,7 +147,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
 }
 
 - (void)play {
-    NSLog(@"🐝触发播放");
     if (!_isPreparedToPlay) {
         [self prepareToPlay];
     } else {
@@ -156,9 +155,7 @@ static NSString *const kPresentationSize         = @"presentationSize";
         self->_isPlaying = YES;
         self.playState = ZFPlayerPlayStatePlaying;
     }
-    NSLog(@"🐝 播放的时候 %d %d",[ZFAdManager.shared.ad show], ZFAdManager.shared.ad.enter);
     if([ZFAdManager.shared.ad show] || ZFAdManager.shared.ad.enter){
-        NSLog(@"🐝触发有广告暂停");
         [self pause];
     }
 }
@@ -170,7 +167,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
     self.playState = ZFPlayerPlayStatePaused;
     [_playerItem cancelPendingSeeks];
     [_asset cancelLoading];
-    NSLog(@"🐝触发暂停");
 }
 
 - (void)pause {
@@ -315,7 +311,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
     /// 没有网络
     if ([ZFReachabilityManager sharedManager].networkReachabilityStatus == ZFReachabilityStatusNotReachable) return;
     self.isBuffering = YES;
-//    NSLog(@"🐝 缓冲较差暂停");
     // 需要先暂停一小会之后再播放，否则网络状况不好的时候时间在走，声音播放不出来
 //    [self pause:YES];
 //    self.loadState = ZFPlayerLoadStateTempPause;
@@ -325,7 +320,6 @@ static NSString *const kPresentationSize         = @"presentationSize";
             return;
         }
         if(![ZFAdManager.shared.ad show]){
-//            NSLog(@"🐝 没有广告继续播放");
             [self play];
             // 如果执行了play还是没有播放则说明还没有缓存好，则再次缓存一段时间
             self.isBuffering = NO;

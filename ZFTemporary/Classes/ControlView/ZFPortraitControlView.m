@@ -54,7 +54,6 @@
 
 @property (nonatomic, assign) BOOL isShow;
 @property (nonatomic, strong) UIStackView *stackView;
-@property (nonatomic, strong) CAGradientLayer *gradientLayer;
 
 @end
 
@@ -114,20 +113,9 @@
         make.centerY.mas_equalTo(0);
     }];
     [self.stackView layoutIfNeeded];
-    [self.adBTN layoutIfNeeded];
-    if(!self.gradientLayer && self.adBTN.bounds.size.width) {
-        CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-        gradientLayer.frame = self.adBTN.bounds;
-        NSArray *cgColors = @[UIColorFromHex(0xECCD6E), UIColorFromHex(0xFAE093)];
-        gradientLayer.colors = cgColors;
-        gradientLayer.startPoint = CGPointMake(0, 0);
-        gradientLayer.endPoint = CGPointMake(1, 0);
-        gradientLayer.locations = @[@0, @1];
-        self.gradientLayer = gradientLayer;
-    }
-    [self.adBTN.layer insertSublayer:self.gradientLayer atIndex:0];
     self.adBTN.layer.cornerRadius = self.adBTN.frame.size.height / 2.0;
     self.adBTN.layer.masksToBounds = YES;
+    self.adBTN.backgroundColor = UIColorFromHex(0xECCD6E);
     
     min_x = 45;
     min_y = 0;
