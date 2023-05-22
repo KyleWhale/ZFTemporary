@@ -754,7 +754,7 @@
 - (UIButton *)backBtn {
     if (!_backBtn) {
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_backBtn setImage:ZFPlayer_Image(@"ZFPlayer_back") forState:UIControlStateNormal];//测试
+        [_backBtn setImage:ZFPlayer_Image(@"ZFPlayer_back") forState:UIControlStateNormal];
     }
     return _backBtn;
 }
