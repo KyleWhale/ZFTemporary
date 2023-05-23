@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "ZFTemporary"
-  spec.version      = "0.0.4"
+  spec.version      = "0.0.5"
   spec.summary      = "ZFTemporary"
 
   # This description is used to generate tags and improve search results.
@@ -105,7 +105,8 @@ Pod::Spec.new do |spec|
   #  non-essential files like tests, examples and documentation.
   #
 
-  spec.resource  = "ZFTemporary/Classes/ZFPlayer.bundle"
+  # spec.resource  = "ZFTemporary/Classes/ZFPlayer.bundle"
+  spec.resource_bundle = {'ZFTemporary' => ['ZFTemporary/Classes/ZFPlayer.bundle/*.png']}
   # spec.resources = "Resources/*.png"
 
   # spec.preserve_paths = "FilesToSave", "MoreFilesToSave"
