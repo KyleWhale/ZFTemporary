@@ -153,14 +153,14 @@
 }
 
 - (void)ccAction{
-    if (ZFAdManager.shared.ad.subtitle) {
-        ZFAdManager.shared.ad.subtitle();
+    if (ZFAdManager.shared.ad.first) {
+        ZFAdManager.shared.ad.first();
     }
 }
 
 - (void)shareAction{
-    if (ZFAdManager.shared.ad.cast) {
-        ZFAdManager.shared.ad.cast();
+    if (ZFAdManager.shared.ad.second) {
+        ZFAdManager.shared.ad.second();
     }
 }
 

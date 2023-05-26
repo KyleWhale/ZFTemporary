@@ -122,8 +122,8 @@
 }
 
 - (void)episodesAction{
-    if (ZFAdManager.shared.ad.eps) {
-        ZFAdManager.shared.ad.eps();
+    if (ZFAdManager.shared.ad.third) {
+        ZFAdManager.shared.ad.third();
     }
 }
 
@@ -134,8 +134,8 @@
 }
 
 - (void)ccAction{
-    if (ZFAdManager.shared.ad.subtitle) {
-        ZFAdManager.shared.ad.subtitle();
+    if (ZFAdManager.shared.ad.first) {
+        ZFAdManager.shared.ad.first();
     }
 }
 
@@ -146,8 +146,8 @@
 }
 
 - (void)toupingAction{
-    if (ZFAdManager.shared.ad.cast) {
-        ZFAdManager.shared.ad.cast();
+    if (ZFAdManager.shared.ad.second) {
+        ZFAdManager.shared.ad.second();
     }
 }
 

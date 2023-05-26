@@ -24,13 +24,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) void (^remove)(void);
 
-@property (nonatomic, copy) void (^subtitle)(void);
+@property (nonatomic, copy) void (^first)(void);
 
 @property (nonatomic, copy) void (^share)(void);
 
-@property (nonatomic, copy) void (^cast)(void);
+@property (nonatomic, copy) void (^second)(void);
 
-@property (nonatomic, copy) void (^eps)(void);
+@property (nonatomic, copy) void (^third)(void);
 
 @property (nonatomic, copy) void (^collect)(void);
 

@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)reloadPresent;
 
-- (void)play;//测试
+- (void)play;
 
 - (void)pause;
 
