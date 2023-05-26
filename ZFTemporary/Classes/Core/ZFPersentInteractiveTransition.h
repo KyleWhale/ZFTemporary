@@ -1,6 +1,6 @@
 //
 //  ZFPersentInteractiveTransition.h
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //
@@ -33,7 +33,7 @@
 @property (nonatomic, assign) BOOL interation;
 
 /// default is ZFDisablePortraitGestureTypesNone.
-@property (nonatomic, assign) ZFDisablePortraitGestureTypes disablePortraitGestureTypes;
+@property (nonatomic, assign) ZFDecidePresentGardenTypes disablePortraitGestureTypes;
 
 @property (nonatomic, assign) BOOL fullScreenAnimation;
 

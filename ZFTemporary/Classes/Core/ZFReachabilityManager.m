@@ -1,6 +1,6 @@
 //
 //  ZFReachabilityManager.m
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
 //
@@ -31,7 +31,7 @@
 #import <netdb.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 
-NSString * const ZFReachabilityDidChangeNotification = @"com.ZFPlayer.reachability.change";
+NSString * const ZFReachabilityDidChangeNotification = @"com.ZFPrimaryStage.reachability.change";
 NSString * const ZFReachabilityNotificationStatusItem = @"ZFNetworkingReachabilityNotificationStatusItem";
 
 typedef void (^ZFReachabilityStatusBlock)(ZFReachabilityStatus status);
@@ -132,7 +132,7 @@ static void ZFPostReachabilityStatusChange(SCNetworkReachabilityFlags flags, ZFR
     });
 }
 
-static void ZFPlayerReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
+static void ZFPrimaryStageReachabilityCallback(SCNetworkReachabilityRef __unused target, SCNetworkReachabilityFlags flags, void *info) {
     ZFPostReachabilityStatusChange(flags, (__bridge ZFReachabilityStatusBlock)info);
 }
 
@@ -250,7 +250,7 @@ static void ZFReachabilityReleaseCallback(const void *info) {
     };
     
     SCNetworkReachabilityContext context = {0, (__bridge void *)callback, ZFReachabilityRetainCallback, ZFReachabilityReleaseCallback, NULL};
-    SCNetworkReachabilitySetCallback(self.networkReachability, ZFPlayerReachabilityCallback, &context);
+    SCNetworkReachabilitySetCallback(self.networkReachability, ZFPrimaryStageReachabilityCallback, &context);
     SCNetworkReachabilityScheduleWithRunLoop(self.networkReachability, CFRunLoopGetMain(), kCFRunLoopCommonModes);
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0),^{

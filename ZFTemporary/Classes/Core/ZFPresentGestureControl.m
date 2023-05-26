@@ -1,30 +1,8 @@
-//
-//  ZFPlayerGestureControl.m
-//  ZFPlayer
-//
-// Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 
-#import "ZFPlayerGestureControl.h"
 
-@interface ZFPlayerGestureControl ()<UIGestureRecognizerDelegate>
+#import "ZFPresentGestureControl.h"
+
+@interface ZFPresentGestureControl ()<UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UITapGestureRecognizer *singleTap;
 @property (nonatomic, strong) UITapGestureRecognizer *doubleTap;
@@ -38,7 +16,7 @@
 
 @end
 
-@implementation ZFPlayerGestureControl
+@implementation ZFPresentGestureControl
 
 - (void)addGestureToView:(UIView *)view {
     self.targetView = view;
@@ -65,9 +43,9 @@
         CGPoint translation = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:self.targetView];
         CGFloat x = fabs(translation.x);
         CGFloat y = fabs(translation.y);
-        if (x < y && self.disablePanMovingDirection & ZFPlayerDisablePanMovingDirectionVertical) { /// up and down moving direction.
+        if (x < y && self.disablePanMovingDirection & ZFPrimaryStageDisablePanMovingDirectionVertical) {
             return NO;
-        } else if (x > y && self.disablePanMovingDirection & ZFPlayerDisablePanMovingDirectionHorizontal) { /// left and right moving direction.
+        } else if (x > y && self.disablePanMovingDirection & ZFPrimaryStageDisablePanMovingDirectionHorizontal) {
             return NO;
         }
     }
@@ -75,11 +53,11 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    ZFPlayerGestureType type = ZFPlayerGestureTypeUnknown;
-    if (gestureRecognizer == self.singleTap) type = ZFPlayerGestureTypeSingleTap;
-    else if (gestureRecognizer == self.doubleTap) type = ZFPlayerGestureTypeDoubleTap;
-    else if (gestureRecognizer == self.panGR) type = ZFPlayerGestureTypePan;
-    else if (gestureRecognizer == self.pinchGR) type = ZFPlayerGestureTypePinch;
+    ZFPrimaryStageGestureType type = ZFPrimaryStageGestureTypeUnknown;
+    if (gestureRecognizer == self.singleTap) type = ZFPrimaryStageGestureTypeSingleTap;
+    else if (gestureRecognizer == self.doubleTap) type = ZFPrimaryStageGestureTypeDoubleTap;
+    else if (gestureRecognizer == self.panGR) type = ZFPrimaryStageGestureTypePan;
+    else if (gestureRecognizer == self.pinchGR) type = ZFPrimaryStageGestureTypePinch;
     CGPoint locationPoint = [touch locationInView:touch.view];
     if (locationPoint.x > _targetView.bounds.size.width / 2) {
         self.panLocation = ZFPanLocationRight;
@@ -88,33 +66,33 @@
     }
     
     switch (type) {
-        case ZFPlayerGestureTypeUnknown: break;
-        case ZFPlayerGestureTypePan: {
-            if (self.disableTypes & ZFPlayerDisableGestureTypesPan) {
+        case ZFPrimaryStageGestureTypeUnknown: break;
+        case ZFPrimaryStageGestureTypePan: {
+            if (self.disableTypes & ZFPrimaryStageDisableGestureTypesPan) {
                 return NO;
             }
         }
             break;
-        case ZFPlayerGestureTypePinch: {
-            if (self.disableTypes & ZFPlayerDisableGestureTypesPinch) {
+        case ZFPrimaryStageGestureTypePinch: {
+            if (self.disableTypes & ZFPrimaryStageDisableGestureTypesPinch) {
                 return NO;
             }
         }
             break;
-        case ZFPlayerGestureTypeDoubleTap: {
-            if (self.disableTypes & ZFPlayerDisableGestureTypesDoubleTap) {
+        case ZFPrimaryStageGestureTypeDoubleTap: {
+            if (self.disableTypes & ZFPrimaryStageDisableGestureTypesDoubleTap) {
                 return NO;
             }
         }
             break;
-        case ZFPlayerGestureTypeSingleTap: {
-            if (self.disableTypes & ZFPlayerDisableGestureTypesSingleTap) {
+        case ZFPrimaryStageGestureTypeSingleTap: {
+            if (self.disableTypes & ZFPrimaryStageDisableGestureTypesSingleTap) {
                 return NO;
             }
         }
             break;
-        case ZFPlayerDisableGestureTypesLongPress: {
-            if (self.disableTypes & ZFPlayerDisableGestureTypesLongPress) {
+        case ZFPrimaryStageDisableGestureTypesLongPress: {
+            if (self.disableTypes & ZFPrimaryStageDisableGestureTypesLongPress) {
                 return NO;
             }
         }
@@ -124,7 +102,6 @@
     return YES;
 }
 
-// Whether to support multi-trigger, return YES, you can trigger a method with multiple gestures, return NO is mutually exclusive
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     if (otherGestureRecognizer != self.singleTap &&
         otherGestureRecognizer != self.doubleTap &&
@@ -135,9 +112,9 @@
         CGPoint translation = [(UIPanGestureRecognizer *)gestureRecognizer translationInView:self.targetView];
         CGFloat x = fabs(translation.x);
         CGFloat y = fabs(translation.y);
-        if (x < y && self.disablePanMovingDirection & ZFPlayerDisablePanMovingDirectionVertical) {
+        if (x < y && self.disablePanMovingDirection & ZFPrimaryStageDisablePanMovingDirectionVertical) {
             return YES;
-        } else if (x > y && self.disablePanMovingDirection & ZFPlayerDisablePanMovingDirectionHorizontal) {
+        } else if (x > y && self.disablePanMovingDirection & ZFPrimaryStageDisablePanMovingDirectionHorizontal) {
             return YES;
         }
     }
@@ -218,9 +195,9 @@
             CGFloat x = fabs(velocity.x);
             CGFloat y = fabs(velocity.y);
             if (x > y) {
-                self.panDirection = ZFPanDirectionH;
+                self.panDirection = ZFPanDirectionHorizontal;
             } else if (x < y) {
-                self.panDirection = ZFPanDirectionV;
+                self.panDirection = ZFPanDirectionVertical;
             } else {
                 self.panDirection = ZFPanDirectionUnknown;
             }
@@ -230,7 +207,7 @@
             break;
         case UIGestureRecognizerStateChanged: {
             switch (_panDirection) {
-                case ZFPanDirectionH: {
+                case ZFPanDirectionHorizontal: {
                     if (translate.x > 0) {
                         self.panMovingDirection = ZFPanMovingDirectionRight;
                     } else {
@@ -238,7 +215,7 @@
                     }
                 }
                     break;
-                case ZFPanDirectionV: {
+                case ZFPanDirectionVertical: {
                     if (translate.y > 0) {
                         self.panMovingDirection = ZFPanMovingDirectionBottom;
                     } else {

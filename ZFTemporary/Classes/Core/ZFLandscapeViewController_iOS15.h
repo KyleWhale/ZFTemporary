@@ -1,6 +1,6 @@
 //
 //  ZFLandscapeViewController_iOS15.h
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //

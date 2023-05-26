@@ -1,43 +1,21 @@
-//
-//  ZFPlayerStatusBar.m
-//  ZFPlayer
-//
-// Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 
-#import "ZFPlayerStatusBar.h"
+
+#import "ZFPresentStatusBar.h"
 #import <CoreTelephony/CTCarrier.h>
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import "UIView+ZFFrame.h"
 #import "ZFReachabilityManager.h"
 #import "ZFUtilities.h"
 
-@interface ZFPlayerTimerTarget: NSProxy
+@interface ZFPrimaryStageTimerTarget: NSProxy
 @property (nonatomic, weak) id target;
 
 @end
 
-@implementation ZFPlayerTimerTarget
+@implementation ZFPrimaryStageTimerTarget
 
 + (instancetype)proxyWithTarget:(id)target {
-    ZFPlayerTimerTarget *proxy = [ZFPlayerTimerTarget alloc];
+    ZFPrimaryStageTimerTarget *proxy = [ZFPrimaryStageTimerTarget alloc];
     proxy.target = target;
     return proxy;
 }
@@ -47,8 +25,6 @@
     if ([self.target respondsToSelector:sel]) {
         signature = [self.target methodSignatureForSelector:sel];
     } else {
-        /// 动态造一个 void object selector arg 函数签名。
-        /// 目的是返回有效signature，不要因为找不到而crash
         signature = [NSMethodSignature signatureWithObjCTypes:"v@:@"];
     }
     return signature;
@@ -62,29 +38,21 @@
 
 @end
 
-@interface ZFPlayerStatusBar()
-/// 时间
+@interface ZFPresentStatusBar()
 @property (nonatomic, strong) UILabel *dateLabel;
-/// 电池
 @property (nonatomic, strong) UIView *batteryView;
-/// 充电标识
 @property (nonatomic, strong) UIImageView *batteryImageView;
-/// 充电层
 @property (nonatomic, strong) CAShapeLayer *batteryLayer;
-/// 电池边框
 @property (nonatomic, strong) CAShapeLayer *batteryBoundLayer;
-/// 电池正极
 @property (nonatomic, strong) CAShapeLayer *batteryPositiveLayer;
-/// 电量百分比
 @property (nonatomic, strong) UILabel *batteryLabel;
-/// 网络状态
 @property (nonatomic, strong) UILabel *networkLabel;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
 
 @end
 
-@implementation ZFPlayerStatusBar
+@implementation ZFPresentStatusBar
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
@@ -125,14 +93,10 @@
 
 - (void)setup {
     self.refreshTime = 3.0;
-    /// 时间
     [self addSubview:self.dateLabel];
     [self addSubview:self.batteryView];
-    /// 电池
     [self.batteryView.layer addSublayer:self.batteryBoundLayer];
-    /// 正极
     [self.batteryView.layer addSublayer:self.batteryPositiveLayer];
-    /// 是否在充电
     [self.batteryView.layer addSublayer:self.batteryLayer];
     [self.batteryView addSubview:self.batteryImageView];
     [self addSubview:self.batteryLabel];
@@ -182,7 +146,7 @@
 }
 
 - (void)startTimer {
-    self.timer = [NSTimer timerWithTimeInterval:self.refreshTime target:[ZFPlayerTimerTarget proxyWithTarget:self] selector:@selector(updateUI) userInfo:nil repeats:YES];
+    self.timer = [NSTimer timerWithTimeInterval:self.refreshTime target:[ZFPrimaryStageTimerTarget proxyWithTarget:self] selector:@selector(updateUI) userInfo:nil repeats:YES];
     [[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
     [self.timer fire];
 }
@@ -218,36 +182,35 @@
 - (void)updateBattery {
     [UIDevice currentDevice].batteryMonitoringEnabled = YES;
     CGFloat batteryLevel = [UIDevice currentDevice].batteryLevel;
-    /// -1是模拟器
     if (batteryLevel < 0) { batteryLevel = 1.0; }
     CGRect rect = CGRectMake(1.5, 1.5, (20-3)*batteryLevel, 10-3);
     UIBezierPath *batteryPath = [UIBezierPath bezierPathWithRoundedRect:rect cornerRadius:2];
     
     UIColor *batteryColor;
     UIDeviceBatteryState batteryState = [UIDevice currentDevice].batteryState;
-    if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) { /// 在充电
+    if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) {
         self.batteryImageView.hidden = NO;
     } else {
         self.batteryImageView.hidden = YES;
     }
     if (@available(iOS 9.0, *)) {
-        if ([NSProcessInfo processInfo].lowPowerModeEnabled) { /// 低电量模式
+        if ([NSProcessInfo processInfo].lowPowerModeEnabled) {
             batteryColor = UIColorFromHex(0xF9CF0E);
         } else {
-            if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) { /// 在充电
+            if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) {
                 batteryColor = UIColorFromHex(0x37CB46);
-            } else if (batteryLevel <= 0.2) { /// 电量低
+            } else if (batteryLevel <= 0.2) {
                 batteryColor = UIColorFromHex(0xF02C2D);
-            } else { /// 电量正常 白色
+            } else {
                 batteryColor = [UIColor whiteColor];
             }
         }
     } else {
-        if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) { /// 在充电
+        if (batteryState == UIDeviceBatteryStateCharging || batteryState == UIDeviceBatteryStateFull) {
             batteryColor = UIColorFromHex(0x37CB46);
-        } else if (batteryLevel <= 0.2) { /// 电量低
+        } else if (batteryLevel <= 0.2) {
             batteryColor = UIColorFromHex(0xF02C2D);
-        } else { /// 电量正常 白色
+        } else {
             batteryColor = [UIColor whiteColor];
         }
     }
@@ -266,7 +229,7 @@
             net = @"WIFI";
             break;
         case ZFReachabilityStatusNotReachable:
-            net = @"无网络";
+            net = @"No network";
             break;
         case ZFReachabilityStatusReachableVia2G:
             net = @"2G";
@@ -281,7 +244,7 @@
             net = @"5G";
             break;
         default:
-            net = @"未知";
+            net = @"unknown";
             break;
     }
     return net;
@@ -322,7 +285,7 @@
         _batteryImageView = [[UIImageView alloc] init];
         _batteryImageView.bounds = CGRectMake(0, 0, 8, 12);
         _batteryImageView.center = CGPointMake(10, 5);
-        _batteryImageView.image = ZFPlayer_Image(@"ZFPlayer_battery_lightning");
+        _batteryImageView.image = ZFPrimaryStage_Image(@"temp_li");
     }
     return _batteryImageView;
 }

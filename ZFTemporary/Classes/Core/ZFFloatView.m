@@ -1,6 +1,6 @@
 //
 //  ZFFloatView.m
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
 //

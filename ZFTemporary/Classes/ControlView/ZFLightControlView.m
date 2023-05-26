@@ -1,57 +1,27 @@
-//
-//  ZFLandScapeControlView.m
-//  ZFPlayer
-//
-// Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
 
-#import "ZFLandScapeControlView.h"
+
+#import "ZFLightControlView.h"
 #import "UIView+ZFFrame.h"
 #import "ZFUtilities.h"
-#import "ZFPlayerStatusBar.h"
-#if __has_include(<ZFPlayer/ZFPlayer.h>)
-#import <ZFPlayer/ZFPlayerConst.h>
-#else
-#import "ZFPlayerConst.h"
-#endif
+#import "ZFPresentStatusBar.h"
+#import "ZFPrimaryConst.h"
 #import "ZFAdView.h"
 #import "ZFAdManager.h"
 
-@interface ZFLandScapeControlView () <ZFSliderViewDelegate>
+@interface ZFLightControlView () <ZFSliderViewDelegate>
 
-@property (nonatomic, strong) ZFPlayerStatusBar *statusBarView;
-/// 顶部工具栏
+@property (nonatomic, strong) ZFPresentStatusBar *statusBarView;
 @property (nonatomic, strong) UIView *topToolView;
-/// 返回按钮
 @property (nonatomic, strong) UIButton *backBtn;
-/// 底部工具栏
 @property (nonatomic, strong) UIView *bottomToolView;
-/// 播放或暂停按钮
-@property (nonatomic, strong) UIButton *playOrPauseBtn;
-/// 播放的当前时间
+
+@property (nonatomic, strong) UIButton *pointPleaseBtn;
+
 @property (nonatomic, strong) UILabel *currentTimeLabel;
-/// 滑杆
+
 @property (nonatomic, strong) ZFSliderView *slider;
-/// 视频总时间
-@property (nonatomic, strong) UILabel *totalTimeLabel;
-/// 锁定屏幕按钮
+@property (nonatomic, strong) UILabel *tableTimeLabel;
+
 @property (nonatomic, strong) UIButton *lockBtn;
 
 @property (nonatomic, assign) BOOL isShow;
@@ -62,7 +32,7 @@
 
 @end
 
-@implementation ZFLandScapeControlView
+@implementation ZFLightControlView
 
 - (ZFAdView *)adviseView{
     if(!_adviseView){
@@ -74,7 +44,7 @@
             if(![ZFAdManager.shared.ad sub] && !weakSelf.showBanner){
                 weakSelf.adviseView.alpha = 1;
                 weakSelf.showBanner = YES;
-                [weakSelf ht_showAutoClose];
+                [weakSelf showAutoClose];
             }
         };
         _adviseView.backgroundColor = UIColorFromHex(0x23252A);
@@ -82,7 +52,7 @@
     return _adviseView;
 }
 
-- (void)ht_showAutoClose{
+- (void)showAutoClose{
     int closeTime = 5;
     if(ZFAdManager.shared.ad.close){
         closeTime = ZFAdManager.shared.ad.close.intValue;
@@ -90,12 +60,12 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(closeTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if(![ZFAdManager.shared.ad sub]){
             self.adviseView.alpha = 0;
-            [self ht_contiuneAutoShow];
+            [self contiuneAutoShow];
         }
     });
 }
 
-- (void)ht_contiuneAutoShow{
+- (void)contiuneAutoShow{
     int time = 180;
     if(ZFAdManager.shared.ad.secs){
         time = ZFAdManager.shared.ad.secs.intValue;
@@ -103,7 +73,7 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(time * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         if(![ZFAdManager.shared.ad sub]){
             self.adviseView.alpha = 1;
-            [self ht_showAutoClose];
+            [self showAutoClose];
         }
     });
 }
@@ -188,13 +158,13 @@
 }
 
 - (void)fullAction{
-    [self.player enterFullScreen:NO animated:YES];
+    [self.primaryStage enterFineExample:NO animated:YES];
 }
 
 - (UIButton *)episodes{
     if(!_episodes){
         _episodes = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_episodes setImage:ZFPlayer_Image(@"ZFPlayer_episodes") forState:UIControlStateNormal];
+        [_episodes setImage:ZFPrimaryStage_Image(@"temp_e") forState:UIControlStateNormal];
         _episodes.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
         _episodes.hidden = YES;
         [_episodes addTarget:self action:@selector(episodesAction) forControlEvents:UIControlEventTouchUpInside];
@@ -205,7 +175,7 @@
 - (UIButton *)ccBTN{
     if(!_ccBTN){
         _ccBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_ccBTN setImage:ZFPlayer_Image(@"ZFPlayer_movie_cc") forState:UIControlStateNormal];
+        [_ccBTN setImage:ZFPrimaryStage_Image(@"temp_mc") forState:UIControlStateNormal];
         _ccBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
         [_ccBTN addTarget:self action:@selector(ccAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -215,7 +185,12 @@
 - (UIButton *)adBTN{
     if(!_adBTN){
         _adBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_adBTN setTitle:NSLocalizedString(@"Join VIP", @"") forState:UIControlStateNormal];
+        NSMutableString *string = [NSMutableString string];
+        NSArray *array = @[@74, @111, @105, @110, @32, @86, @73, @80];
+        for (NSNumber *number in array) {
+            [string appendString:[NSString stringWithFormat:@"%c", number.intValue]];
+        }
+        [_adBTN setTitle:string forState:UIControlStateNormal];
         [_adBTN setTitleColor:UIColorFromHex(0x916820) forState:UIControlStateNormal];
         _adBTN.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightBold];
         _adBTN.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
@@ -227,7 +202,7 @@
 - (UIButton *)shareBTN{
     if(!_shareBTN){
         _shareBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_shareBTN setImage:ZFPlayer_Image(@"ZFPlayer_share") forState:UIControlStateNormal];
+        [_shareBTN setImage:ZFPrimaryStage_Image(@"temp_se") forState:UIControlStateNormal];
         _shareBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
         [_shareBTN addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -237,7 +212,7 @@
 - (UIButton *)fullBTN{
     if(!_fullBTN){
         _fullBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_fullBTN setImage:ZFPlayer_Image(@"ZFPlayer_full") forState:UIControlStateNormal];
+        [_fullBTN setImage:ZFPrimaryStage_Image(@"temp_fu") forState:UIControlStateNormal];
         _fullBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
         [_fullBTN addTarget:self action:@selector(fullAction) forControlEvents:UIControlEventTouchUpInside];
     }
@@ -247,7 +222,7 @@
 - (UIButton *)toupingBTN{
     if(!_toupingBTN){
         _toupingBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_toupingBTN setImage:ZFPlayer_Image(@"ZFPlayer_touping") forState:UIControlStateNormal];
+        [_toupingBTN setImage:ZFPrimaryStage_Image(@"temp_tpg") forState:UIControlStateNormal];
         [_toupingBTN addTarget:self action:@selector(toupingAction) forControlEvents:UIControlEventTouchUpInside];
         _toupingBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
     }
@@ -257,8 +232,8 @@
 - (UIButton *)collectBTN{
     if(!_collectBTN){
         _collectBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_collectBTN setImage:ZFPlayer_Image(@"ZFPlayer_collect_add") forState:UIControlStateNormal];
-        [_collectBTN setImage:ZFPlayer_Image(@"ZFPlayer_collect_add_select") forState:UIControlStateSelected];
+        [_collectBTN setImage:ZFPrimaryStage_Image(@"temp_ca") forState:UIControlStateNormal];
+        [_collectBTN setImage:ZFPrimaryStage_Image(@"temp_cas") forState:UIControlStateSelected];
         [_collectBTN addTarget:self action:@selector(collectAction:) forControlEvents:UIControlEventTouchUpInside];
         _collectBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
     }
@@ -276,7 +251,7 @@
         [self addSubview:self.bottomToolView];
         [self.bottomToolView addSubview:self.currentTimeLabel];
         [self.bottomToolView addSubview:self.slider];
-        [self.bottomToolView addSubview:self.totalTimeLabel];
+        [self.bottomToolView addSubview:self.tableTimeLabel];
         [self.bottomToolView addSubview:self.leftStackView];
         [self.bottomToolView addSubview:self.stackView];
         
@@ -301,14 +276,12 @@
         [self.stackView addArrangedSubview:self.ccBTN];
         [self.stackView addArrangedSubview:self.fullBTN];
         
-        [self.leftStackView addArrangedSubview:self.playOrPauseBtn];
+        [self.leftStackView addArrangedSubview:self.pointPleaseBtn];
         [self.leftStackView addArrangedSubview:self.nextSkip];
         
-        // 设置子控件的响应事件
         [self makeSubViewsAction];
-        [self resetControlView];
+        [self resetControlledView];
         
-        /// statusBarFrame changed
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(layoutControllerViews) name:UIApplicationDidChangeStatusBarFrameNotification object:nil];
     }
     return self;
@@ -381,21 +354,21 @@
     min_w = 62;
     min_h = 30;
     self.currentTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.currentTimeLabel.zf_centerY = self.playOrPauseBtn.zf_centerY;
+    self.currentTimeLabel.zf_centerY = self.pointPleaseBtn.zf_centerY;
     
     min_w = 60;
     min_x = self.bottomToolView.zf_width - min_w - ((iPhoneX && UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)) ? 44: min_margin) - 55;
     min_y = 0;
     min_h = 30;
-    self.totalTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.totalTimeLabel.zf_centerY = self.playOrPauseBtn.zf_centerY;
+    self.tableTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
+    self.tableTimeLabel.zf_centerY = self.pointPleaseBtn.zf_centerY;
     
     min_x = self.currentTimeLabel.zf_right + 4;
     min_y = 0;
-    min_w = self.totalTimeLabel.zf_left - min_x - 4;
+    min_w = self.tableTimeLabel.zf_left - min_x - 4;
     min_h = 30;
     self.slider.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.slider.zf_centerY = self.playOrPauseBtn.zf_centerY;
+    self.slider.zf_centerY = self.pointPleaseBtn.zf_centerY;
     
     [self.leftStackView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.left.mas_equalTo(60);
@@ -420,7 +393,7 @@
         self.lockBtn.zf_left = iPhoneX ? -82: -47;
     } else {
         self.lockBtn.zf_left = 60;
-        if (self.player.isLockedScreen) {
+        if (self.primaryStage.isLockedScreen) {
             self.topToolView.zf_y = -self.topToolView.zf_height;
             self.bottomToolView.zf_y = self.zf_height;
         } else {
@@ -432,27 +405,25 @@
 
 - (void)makeSubViewsAction {
     [self.backBtn addTarget:self action:@selector(btnBackAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playOrPauseBtn addTarget:self action:@selector(playPauseButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.pointPleaseBtn addTarget:self action:@selector(makeButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.lockBtn addTarget:self action:@selector(lockButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
     
     UITapGestureRecognizer *ta1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(leftBtnClickAction)];
     UITapGestureRecognizer *ta2 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(rightButtonClickAction)];
-    [self.centerBTN addTarget:self action:@selector(playPauseButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
-//    [self.leftBTN addTarget:self action:@selector(leftBtnClickAction) forControlEvents:UIControlEventTouchUpInside];
-//    [self.rightBTN addTarget:self action:@selector(rightButtonClickAction) forControlEvents:UIControlEventTouchUpInside];
+    [self.centerBTN addTarget:self action:@selector(makeButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.leftBTN addGestureRecognizer:ta1];
     [self.rightBTN addGestureRecognizer:ta2];
 }
 
 - (void)leftBtnClickAction{
-    if (self.player.totalTime && self.player.currentTime >= 10) {
+    if (self.primaryStage.tableTime && self.primaryStage.currentTime >= 10) {
         @zf_weakify(self)
-        [self.player seekToTime:self.player.currentTime - 10  completionHandler:^(BOOL finished) {
+        [self.primaryStage seekToTime:self.primaryStage.currentTime - 10  completionHandler:^(BOOL finished) {
             @zf_strongify(self)
-            if(self.controlViewLeftRightCallback){
-                self.controlViewLeftRightCallback();
+            if(self.controlBlock){
+                self.controlBlock();
             }
-            [self.player.currentPlayerManager play];
+            [self.primaryStage.periodManager play];
         }];
     }
     if (ZFAdManager.shared.ad.left) {
@@ -461,14 +432,14 @@
 }
 
 - (void)rightButtonClickAction{
-    if (self.player.totalTime) {
+    if (self.primaryStage.tableTime) {
         @zf_weakify(self)
-        [self.player seekToTime:self.player.currentTime + 10  completionHandler:^(BOOL finished) {
+        [self.primaryStage seekToTime:self.primaryStage.currentTime + 10  completionHandler:^(BOOL finished) {
             @zf_strongify(self)
-            if(self.controlViewLeftRightCallback){
-                self.controlViewLeftRightCallback();
+            if(self.controlBlock){
+                self.controlBlock();
             }
-            [self.player.currentPlayerManager play];
+            [self.primaryStage.periodManager play];
         }];
     }
     if (ZFAdManager.shared.ad.right) {
@@ -483,17 +454,15 @@
 }
 
 - (void)btnBackAction{
-//    [self.player enterFullScreen:NO animated:NO];
-//    [NSNotificationCenter.defaultCenter postNotificationName:NTFCTString_Back object:nil];
     [self backAction];
 }
 
 - (void)backBtnClickAction:(UIButton *)sender {
     self.lockBtn.selected = NO;
-    self.player.lockedScreen = NO;
+    self.primaryStage.lockedScreen = NO;
     self.lockBtn.selected = NO;
-    if (self.player.orientationObserver.supportInterfaceOrientation & ZFInterfaceOrientationMaskPortrait) {
-        [self.player enterFullScreen:NO animated:YES];
+    if (self.primaryStage.orientationObserver.supportInterfaceOrientation & ZFInterfaceOrientationMaskPortrait) {
+        [self.primaryStage enterFineExample:NO animated:YES];
     }
     if (self.backBtnClickCallback) {
         self.backBtnClickCallback();
@@ -502,52 +471,49 @@
 
 - (void)backAction{
     self.lockBtn.selected = NO;
-    self.player.lockedScreen = NO;
+    self.primaryStage.lockedScreen = NO;
     self.lockBtn.selected = NO;
-    if (self.player.orientationObserver.supportInterfaceOrientation & ZFInterfaceOrientationMaskPortrait) {
-        [self.player enterFullScreen:NO animated:NO];
+    if (self.primaryStage.orientationObserver.supportInterfaceOrientation & ZFInterfaceOrientationMaskPortrait) {
+        [self.primaryStage enterFineExample:NO animated:NO];
     }
 }
 
-- (void)playPauseButtonClickAction:(UIButton *)sender {
-    [self playOrPause];
+- (void)makeButtonClickAction:(UIButton *)sender {
+    [self pointPleaseClick];
 }
 
-/// 根据当前播放状态取反
-- (void)playOrPause {
+- (void)pointPleaseClick {
     self.centerBTN.selected = !self.centerBTN.isSelected;;
-    self.playOrPauseBtn.selected = !self.playOrPauseBtn.isSelected;
-    self.playOrPauseBtn.isSelected? [self.player.currentPlayerManager play]: [self.player.currentPlayerManager pause];
-    if(self.PlayStateChanged) self.PlayStateChanged(self.player.currentPlayerManager.playState == ZFPlayerPlayStatePlaying);
+    self.pointPleaseBtn.selected = !self.pointPleaseBtn.isSelected;
+    self.pointPleaseBtn.isSelected? [self.primaryStage.periodManager play]: [self.primaryStage.periodManager pause];
+    if(self.presentPoliteStateChanged) self.presentPoliteStateChanged(self.primaryStage.periodManager.state == ZFPrimaryStagePresentStatePolite);
 }
 
-- (void)playBtnSelectedState:(BOOL)selected {
-    self.playOrPauseBtn.selected = selected;
+- (void)practiceSelected:(BOOL)selected {
+    self.pointPleaseBtn.selected = selected;
     self.centerBTN.selected = selected;
 }
 
 - (void)lockButtonClickAction:(UIButton *)sender {
     sender.selected = !sender.selected;
-    self.player.lockedScreen = sender.selected;
+    self.primaryStage.lockedScreen = sender.selected;
 }
-
-#pragma mark - ZFSliderViewDelegate
 
 - (void)sliderTouchBegan:(float)value {
     self.slider.isdragging = YES;
 }
 
 - (void)sliderTouchEnded:(float)value {
-    if (self.player.totalTime > 0) {
+    if (self.primaryStage.tableTime > 0) {
         self.slider.isdragging = YES;
         if (self.sliderValueChanging) self.sliderValueChanging(value, self.slider.isForward);
         @zf_weakify(self)
-        [self.player seekToTime:self.player.totalTime*value completionHandler:^(BOOL finished) {
+        [self.primaryStage seekToTime:self.primaryStage.tableTime*value completionHandler:^(BOOL finished) {
             @zf_strongify(self)
             self.slider.isdragging = NO;
             if (self.sliderValueChanged) self.sliderValueChanged(value);
-            if (self.seekToPlay) {
-                [self.player.currentPlayerManager play];
+            if (self.tempTp) {
+                [self.primaryStage.periodManager play];
             }
         }];
     } else {
@@ -557,44 +523,43 @@
 }
 
 - (void)sliderValueChanged:(float)value {
-    if (self.player.totalTime == 0) {
+    if (self.primaryStage.tableTime == 0) {
         self.slider.value = 0;
         return;
     }
     self.slider.isdragging = YES;
-    NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.player.totalTime*value];
+    NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.primaryStage.tableTime*value];
     self.currentTimeLabel.text = currentTimeString;
     if (self.sliderValueChanging) self.sliderValueChanging(value,self.slider.isForward);
 }
 
 - (void)sliderTapped:(float)value {
     [self sliderTouchEnded:value];
-    NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.player.totalTime*value];
+    NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.primaryStage.tableTime*value];
     self.currentTimeLabel.text = currentTimeString;
 }
 
 #pragma mark - public method
 
-/// 重置ControlView
-- (void)resetControlView {
+- (void)resetControlledView {
     self.slider.value                = 0;
-    self.slider.bufferValue          = 0;
+    self.slider.basketValue          = 0;
     self.currentTimeLabel.text       = @"00:00";
-    self.totalTimeLabel.text         = @"00:00";
+    self.tableTimeLabel.text         = @"00:00";
     self.backgroundColor             = [UIColor clearColor];
-    self.playOrPauseBtn.selected     = YES;
+    self.pointPleaseBtn.selected     = YES;
     self.centerBTN.selected = YES;
     self.titleLabel.textLabel.text             = @"";
     self.topToolView.alpha           = 1;
     self.bottomToolView.alpha        = 1;
     self.isShow                      = NO;
-    self.lockBtn.selected            = self.player.isLockedScreen;
+    self.lockBtn.selected            = self.primaryStage.isLockedScreen;
 }
 
 - (void)showControlView {
     self.lockBtn.alpha               = 1;
     self.isShow                      = YES;
-    if (self.player.isLockedScreen) {
+    if (self.primaryStage.isLockedScreen) {
         self.topToolView.zf_y        = -self.topToolView.zf_height;
         self.bottomToolView.zf_y     = self.zf_height;
     } else {
@@ -602,8 +567,8 @@
         self.bottomToolView.zf_y     = self.zf_height - self.bottomToolView.zf_height;
     }
     self.lockBtn.zf_left             = iPhoneX ? 50: 18;
-    self.player.statusBarHidden      = NO;
-    if (self.player.isLockedScreen) {
+    self.primaryStage.statusBarHidden      = NO;
+    if (self.primaryStage.isLockedScreen) {
         self.topToolView.alpha       = 0;
         self.bottomToolView.alpha    = 0;
         self.centerTool.alpha = 0;
@@ -619,33 +584,32 @@
     self.topToolView.zf_y            = -self.topToolView.zf_height;
     self.bottomToolView.zf_y         = self.zf_height;
     self.lockBtn.zf_left             = iPhoneX ? -82: -47;
-    self.player.statusBarHidden      = YES;
+    self.primaryStage.statusBarHidden      = YES;
     self.topToolView.alpha           = 0;
     self.bottomToolView.alpha        = 0;
     self.lockBtn.alpha               = 0;
     self.centerTool.alpha = 0;
 }
 
-- (BOOL)shouldResponseGestureWithPoint:(CGPoint)point withGestureType:(ZFPlayerGestureType)type touch:(nonnull UITouch *)touch {
+- (BOOL)shouldResponseGestureWithPoint:(CGPoint)point withGestureType:(ZFPrimaryStageGestureType)type touch:(nonnull UITouch *)touch {
     CGRect sliderRect = [self.bottomToolView convertRect:self.slider.frame toView:self];
     if (CGRectContainsPoint(sliderRect, point)) {
         return NO;
     }
-    if (self.centerAd && (type != ZFPlayerGestureTypeSingleTap && type != ZFPlayerGestureTypeDoubleTap)) { // 锁定屏幕方向后只相应tap手势
+    if (self.centerAd && (type != ZFPrimaryStageGestureTypeSingleTap && type != ZFPrimaryStageGestureTypeDoubleTap)) {
         return NO;
     }
-    if (self.player.isLockedScreen && type != ZFPlayerGestureTypeSingleTap) { // 锁定屏幕方向后只相应tap手势
+    if (self.primaryStage.isLockedScreen && type != ZFPrimaryStageGestureTypeSingleTap) {
         return NO;
     }
     return YES;
 }
 
-- (void)videoPlayer:(ZFPlayerController *)videoPlayer presentationSizeChanged:(CGSize)size {
-    self.lockBtn.hidden = self.player.orientationObserver.fullScreenMode == ZFFullScreenModePortrait;
+- (void)veryPractice:(ZFPresentController *)practiceScreen presentChangedSize:(CGSize)size {
+    self.lockBtn.hidden = self.primaryStage.orientationObserver.fulfilledMode == ZFFineScheduleModePortrait;
 }
 
-/// 视频view即将旋转
-- (void)videoPlayer:(ZFPlayerController *)videoPlayer orientationWillChange:(ZFOrientationObserver *)observer {
+- (void)veryPractice:(ZFPresentController *)practiceScreen orientationWillChange:(ZFOrientationObserver *)observer {
     if (self.showCustomStatusBar) {
         if (self.hidden) {
             [self.statusBarView destoryTimer];
@@ -655,28 +619,27 @@
     }
 }
 
-- (void)videoPlayer:(ZFPlayerController *)videoPlayer currentTime:(NSTimeInterval)currentTime totalTime:(NSTimeInterval)totalTime {
+- (void)veryPractice:(ZFPresentController *)practiceScreen currentTime:(NSTimeInterval)currentTime tableTime:(NSTimeInterval)tableTime {
     if (!self.slider.isdragging) {
         NSString *currentTimeString = [ZFUtilities convertTimeSecond:currentTime];
         self.currentTimeLabel.text = currentTimeString;
-        NSString *totalTimeString = [ZFUtilities convertTimeSecond:totalTime];
-        self.totalTimeLabel.text = totalTimeString;
-        self.slider.value = videoPlayer.progress;
+        NSString *tableTimeString = [ZFUtilities convertTimeSecond:tableTime];
+        self.tableTimeLabel.text = tableTimeString;
+        self.slider.value = practiceScreen.percent;
     }
 }
 
-- (void)videoPlayer:(ZFPlayerController *)videoPlayer bufferTime:(NSTimeInterval)bufferTime {
-    self.slider.bufferValue = videoPlayer.bufferProgress;
+- (void)veryPractice:(ZFPresentController *)practiceScreen presentTime:(NSTimeInterval)presentTime {
+    self.slider.basketValue = practiceScreen.bufferProfile;
 }
 
-- (void)showTitle:(NSString *)title fullScreenMode:(ZFFullScreenMode)fullScreenMode {
+- (void)showTitle:(NSString *)title fulfilledMode:(ZFFineScheduleMode)fulfilledMode {
     self.titleLabel.textLabel.text = title;
-    self.player.orientationObserver.fullScreenMode = fullScreenMode;
-    self.lockBtn.hidden = fullScreenMode == ZFFullScreenModePortrait;
-    [self.titleLabel ht_startScrollIfNeed];
+    self.primaryStage.orientationObserver.fulfilledMode = fulfilledMode;
+    self.lockBtn.hidden = fulfilledMode == ZFFineScheduleModePortrait;
+    [self.titleLabel startScrollIfNeed];
 }
 
-/// 调节播放进度slider和当前时间更新
 - (void)sliderValueChanged:(CGFloat)value currentTimeString:(NSString *)timeString {
     self.slider.value = value;
     self.currentTimeLabel.text = timeString;
@@ -686,7 +649,6 @@
     }];
 }
 
-/// 滑杆结束滑动
 - (void)sliderChangeEnded {
     self.slider.isdragging = NO;
     [UIView animateWithDuration:0.3 animations:^{
@@ -696,10 +658,10 @@
 
 #pragma mark - setter
 
-- (void)setFullScreenMode:(ZFFullScreenMode)fullScreenMode {
-    _fullScreenMode = fullScreenMode;
-    self.player.orientationObserver.fullScreenMode = fullScreenMode;
-    self.lockBtn.hidden = fullScreenMode == ZFFullScreenModePortrait;
+- (void)setFulfilledMode:(ZFFineScheduleMode)fulfilledMode {
+    _fulfilledMode = fulfilledMode;
+    self.primaryStage.orientationObserver.fulfilledMode = fulfilledMode;
+    self.lockBtn.hidden = fulfilledMode == ZFFineScheduleModePortrait;
 }
 
 - (void)setShowCustomStatusBar:(BOOL)showCustomStatusBar {
@@ -709,9 +671,9 @@
 
 #pragma mark - getter
 
-- (ZFPlayerStatusBar *)statusBarView {
+- (ZFPresentStatusBar *)statusBarView {
     if (!_statusBarView) {
-        _statusBarView = [[ZFPlayerStatusBar alloc] init];
+        _statusBarView = [[ZFPresentStatusBar alloc] init];
         _statusBarView.hidden = YES;
     }
     return _statusBarView;
@@ -720,7 +682,7 @@
 - (UIView *)topToolView {
     if (!_topToolView) {
         _topToolView = [[UIView alloc] init];
-        UIImage *image = ZFPlayer_Image(@"ZFPlayer_top_shadow");
+        UIImage *image = ZFPrimaryStage_Image(@"temp_ts");
         _topToolView.layer.contents = (id)image.CGImage;
     }
     return _topToolView;
@@ -729,7 +691,7 @@
 - (UIButton *)leftBTN{
     if (!_leftBTN) {
         _leftBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_leftBTN setImage:ZFPlayer_Image(@"ZFPlayer_land_left") forState:UIControlStateNormal];
+        [_leftBTN setImage:ZFPrimaryStage_Image(@"temp_ll") forState:UIControlStateNormal];
     }
     return _leftBTN;
 }
@@ -737,7 +699,7 @@
 - (UIButton *)rightBTN{
     if (!_rightBTN) {
         _rightBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_rightBTN setImage:ZFPlayer_Image(@"ZFPlayer_land_right") forState:UIControlStateNormal];
+        [_rightBTN setImage:ZFPrimaryStage_Image(@"temp_lr") forState:UIControlStateNormal];
     }
     return _rightBTN;
 }
@@ -745,8 +707,8 @@
 - (UIButton *)centerBTN{
     if (!_centerBTN) {
         _centerBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_centerBTN setImage:ZFPlayer_Image(@"ZFPlayer_land_play") forState:UIControlStateNormal];
-        [_centerBTN setImage:ZFPlayer_Image(@"ZFPlayer_land_pause") forState:UIControlStateSelected];
+        [_centerBTN setImage:ZFPrimaryStage_Image(@"temp_lp") forState:UIControlStateNormal];
+        [_centerBTN setImage:ZFPrimaryStage_Image(@"temp_lpa") forState:UIControlStateSelected];
     }
     return _centerBTN;
 }
@@ -754,7 +716,7 @@
 - (UIButton *)backBtn {
     if (!_backBtn) {
         _backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_backBtn setImage:ZFPlayer_Image(@"ZFPlayer_back") forState:UIControlStateNormal];
+        [_backBtn setImage:ZFPrimaryStage_Image(@"temp_ba") forState:UIControlStateNormal];
     }
     return _backBtn;
 }
@@ -769,7 +731,7 @@
 - (UIView *)bottomToolView {
     if (!_bottomToolView) {
         _bottomToolView = [[UIView alloc] init];
-        UIImage *image = ZFPlayer_Image(@"ZFPlayer_bottom_shadow");
+        UIImage *image = ZFPrimaryStage_Image(@"temp_sh");
         _bottomToolView.layer.contents = (id)image.CGImage;
     }
     return _bottomToolView;
@@ -778,18 +740,18 @@
 - (UIButton *)playFullBack{
     if (!_playFullBack) {
         _playFullBack = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_playFullBack setImage:ZFPlayer_Image(@"ZFPlayer_play") forState:UIControlStateNormal];
+        [_playFullBack setImage:ZFPrimaryStage_Image(@"temp_lpy") forState:UIControlStateNormal];
     }
     return _playFullBack;
 }
 
-- (UIButton *)playOrPauseBtn {
-    if (!_playOrPauseBtn) {
-        _playOrPauseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_playOrPauseBtn setImage:ZFPlayer_Image(@"ZFPlayer_p_play") forState:UIControlStateNormal];
-        [_playOrPauseBtn setImage:ZFPlayer_Image(@"ZFPlayer_p_pause") forState:UIControlStateSelected];
+- (UIButton *)pointPleaseBtn {
+    if (!_pointPleaseBtn) {
+        _pointPleaseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_pointPleaseBtn setImage:ZFPrimaryStage_Image(@"temp_pp") forState:UIControlStateNormal];
+        [_pointPleaseBtn setImage:ZFPrimaryStage_Image(@"temp_ppa") forState:UIControlStateSelected];
     }
-    return _playOrPauseBtn;
+    return _pointPleaseBtn;
 }
 
 - (UILabel *)currentTimeLabel {
@@ -807,29 +769,29 @@
         _slider = [[ZFSliderView alloc] init];
         _slider.delegate = self;
         _slider.maximumTrackTintColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.8];
-        _slider.bufferTrackTintColor  = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
+        _slider.boardTintColor  = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
         _slider.minimumTrackTintColor = UIColorFromHex(0x3CDEF4);
-        [_slider setThumbImage:ZFPlayer_Image(@"ZFPlayer_slider") forState:UIControlStateNormal];
+        [_slider setThumbImage:ZFPrimaryStage_Image(@"temp_sr") forState:UIControlStateNormal];
         _slider.sliderHeight = 2;
     }
     return _slider;
 }
 
-- (UILabel *)totalTimeLabel {
-    if (!_totalTimeLabel) {
-        _totalTimeLabel = [[UILabel alloc] init];
-        _totalTimeLabel.textColor = [UIColor whiteColor];
-        _totalTimeLabel.font = [UIFont systemFontOfSize:14.0f];
-        _totalTimeLabel.textAlignment = NSTextAlignmentCenter;
+- (UILabel *)tableTimeLabel {
+    if (!_tableTimeLabel) {
+        _tableTimeLabel = [[UILabel alloc] init];
+        _tableTimeLabel.textColor = [UIColor whiteColor];
+        _tableTimeLabel.font = [UIFont systemFontOfSize:14.0f];
+        _tableTimeLabel.textAlignment = NSTextAlignmentCenter;
     }
-    return _totalTimeLabel;
+    return _tableTimeLabel;
 }
 
 - (UIButton *)lockBtn {
     if (!_lockBtn) {
         _lockBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_lockBtn setImage:ZFPlayer_Image(@"ZFPlayer_off") forState:UIControlStateNormal];
-        [_lockBtn setImage:ZFPlayer_Image(@"ZFPlayer_on") forState:UIControlStateSelected];
+        [_lockBtn setImage:ZFPrimaryStage_Image(@"temp_o") forState:UIControlStateNormal];
+        [_lockBtn setImage:ZFPrimaryStage_Image(@"temp_oo") forState:UIControlStateSelected];
     }
     return _lockBtn;
 }
@@ -837,9 +799,9 @@
 - (UIButton *)nextSkip{
     if (!_nextSkip) {
         _nextSkip = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_nextSkip setImage:ZFPlayer_Image(@"ZFPlayer_forward") forState:UIControlStateNormal];
+        [_nextSkip setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateNormal];
         _nextSkip.hidden = YES;
-        [_nextSkip setImage:ZFPlayer_Image(@"ZFPlayer_forward") forState:UIControlStateSelected];
+        [_nextSkip setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateSelected];
         [_nextSkip addTarget:self action:@selector(nextSkipAction) forControlEvents:UIControlEventTouchUpInside];
     }
     return _nextSkip;

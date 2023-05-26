@@ -1,6 +1,6 @@
 //
 //  ZFPersentInteractiveTransition.m
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //
@@ -70,20 +70,20 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    ZFDisablePortraitGestureTypes type = ZFDisablePortraitGestureTypesNone;
-    if (gestureRecognizer == self.tapGesture) type = ZFDisablePortraitGestureTypesTap;
-    else if (gestureRecognizer == self.panGesture) type = ZFDisablePortraitGestureTypesPan;
+    ZFDecidePresentGardenTypes type = ZFDecidePresentGardenTypesNone;
+    if (gestureRecognizer == self.tapGesture) type = ZFDecidePresentGardenTypesTap;
+    else if (gestureRecognizer == self.panGesture) type = ZFDecidePresentGardenTypesPan;
     else return NO;
 
     switch (type) {
-        case ZFDisablePortraitGestureTypesTap: {
-            if (self.disablePortraitGestureTypes & ZFDisablePortraitGestureTypesTap) {
+        case ZFDecidePresentGardenTypesTap: {
+            if (self.disablePortraitGestureTypes & ZFDecidePresentGardenTypesTap) {
                 return NO;
             }
         }
             break;
-        case ZFDisablePortraitGestureTypesPan: {
-            if (self.disablePortraitGestureTypes & ZFDisablePortraitGestureTypesPan) {
+        case ZFDecidePresentGardenTypesPan: {
+            if (self.disablePortraitGestureTypes & ZFDecidePresentGardenTypesPan) {
                 return NO;
             }
         }

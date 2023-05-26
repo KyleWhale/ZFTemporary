@@ -1,32 +1,10 @@
-//
-//  ZFNetworkSpeedMonitor.m
-//  ZFPlayer
-//
-// Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+
 
 #import "ZFNetworkSpeedMonitor.h"
-#if __has_include(<ZFPlayer/ZFPlayerLogManager.h>)
-#import <ZFPlayer/ZFPlayerLogManager.h>
+#if __has_include(<ZFPrimaryStage/ZFPresentLogManager.h>)
+#import <ZFPrimaryStage/ZFPresentLogManager.h>
 #else
-#import "ZFPlayerLogManager.h"
+#import "ZFPresentLogManager.h"
 #endif
 #include <arpa/inet.h>
 #include <ifaddrs.h>
@@ -38,17 +16,17 @@ NSString *const ZFUploadNetworkSpeedNotificationKey   = @"ZFUploadNetworkSpeedNo
 NSString *const ZFNetworkSpeedNotificationKey         = @"ZFNetworkSpeedNotificationKey";
 
 @interface ZFNetworkSpeedMonitor () {
-    // 总网速
+    // t
     uint32_t _iBytes;
     uint32_t _oBytes;
     uint32_t _allFlow;
     
-    // wifi网速
+    // wifi
     uint32_t _wifiIBytes;
     uint32_t _wifiOBytes;
     uint32_t _wifiFlow;
     
-    // 3G网速
+    // 3G
     uint32_t _wwanIBytes;
     uint32_t _wwanOBytes;
     uint32_t _wwanFlow;
@@ -67,7 +45,6 @@ NSString *const ZFNetworkSpeedNotificationKey         = @"ZFNetworkSpeedNotifica
     return self;
 }
 
-// 开始监听网速
 - (void)startNetworkSpeedMonitor {
     if (!_timer) {
         _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkNetworkSpeed) userInfo:nil repeats:YES];
@@ -76,7 +53,6 @@ NSString *const ZFNetworkSpeedNotificationKey         = @"ZFNetworkSpeedNotifica
     }
 }
 
-// 停止监听网速
 - (void)stopNetworkSpeedMonitor {
     if ([_timer isValid]) {
         [_timer invalidate];
@@ -147,7 +123,7 @@ NSString *const ZFNetworkSpeedNotificationKey         = @"ZFNetworkSpeedNotifica
         userInfo[ZFNetworkSpeedNotificationKey] = _downloadNetworkSpeed;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:ZFDownloadNetworkSpeedNotificationKey object:nil userInfo:userInfo];
-        ZFPlayerLog(@"downloadNetworkSpeed : %@",_downloadNetworkSpeed);
+        ZFPrimaryStageLog(@"downloadNetworkSpeed : %@",_downloadNetworkSpeed);
     }
     
     _iBytes = iBytes;
@@ -158,7 +134,7 @@ NSString *const ZFNetworkSpeedNotificationKey         = @"ZFNetworkSpeedNotifica
         userInfo[ZFNetworkSpeedNotificationKey] = _uploadNetworkSpeed;
         
         [[NSNotificationCenter defaultCenter] postNotificationName:ZFUploadNetworkSpeedNotificationKey object:nil userInfo:userInfo];
-        ZFPlayerLog(@"uploadNetworkSpeed :%@",_uploadNetworkSpeed);
+        ZFPrimaryStageLog(@"uploadNetworkSpeed :%@",_uploadNetworkSpeed);
     }
     
     _oBytes = oBytes;

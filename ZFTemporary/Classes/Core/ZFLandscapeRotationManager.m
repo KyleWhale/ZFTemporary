@@ -1,6 +1,6 @@
 //
 //  ZFLandscapeRotationManager.m
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //
@@ -38,7 +38,7 @@
     return self;
 }
 
-- (void)updateRotateView:(ZFPlayerView *)rotateView
+- (void)updateRotateView:(ZFPresentView *)rotateView
            containerView:(UIView *)containerView {
     self.contentView = rotateView;
     self.containerView = containerView;

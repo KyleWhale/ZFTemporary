@@ -1,6 +1,6 @@
 //
 //  ZFLandscapeRotationManager_iOS16.h
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //

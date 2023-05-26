@@ -1,6 +1,6 @@
 //
 //  ZFPortraitViewController.h
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
 //
@@ -47,9 +47,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) UIStatusBarAnimation statusBarAnimation;
 
 /// default is ZFDisablePortraitGestureTypesNone.
-@property (nonatomic, assign) ZFDisablePortraitGestureTypes disablePortraitGestureTypes;
+@property (nonatomic, assign) ZFDecidePresentGardenTypes disablePortraitGestureTypes;
 
-@property (nonatomic, assign) CGSize presentationSize;
+@property (nonatomic, assign) CGSize verySize;
 
 @property (nonatomic, assign) BOOL fullScreenAnimation;
 

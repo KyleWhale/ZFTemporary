@@ -1,6 +1,6 @@
 
 //  ZFOrentationObserver.m
-//  ZFPlayer
+//  ZFPrimaryStage
 //
 // Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
 //
@@ -25,7 +25,7 @@
 #import "ZFOrientationObserver.h"
 #import "ZFLandscapeWindow.h"
 #import "ZFPortraitViewController.h"
-#import "ZFPlayerConst.h"
+#import "ZFPrimaryConst.h"
 #import <objc/runtime.h>
 #import "ZFLandscapeRotationManager_iOS15.h"
 #import "ZFLandscapeRotationManager_iOS16.h"
@@ -80,7 +80,7 @@
 
 @interface ZFOrientationObserver ()  
 
-@property (nonatomic, weak) ZFPlayerView *view;
+@property (nonatomic, weak) ZFPresentView *view;
 
 @property (nonatomic, assign, getter=isFullScreen) BOOL fullScreen;
 
@@ -94,15 +94,15 @@
 @end
 
 @implementation ZFOrientationObserver
-@synthesize presentationSize = _presentationSize;
+@synthesize verySize = _verySize;
 
 - (instancetype)init {
     self = [super init];
     if (self) {
         _duration = 0.30;
-        _fullScreenMode = ZFFullScreenModeLandscape;
-        _portraitFullScreenMode = ZFPortraitFullScreenModeScaleToFill;
-        _disablePortraitGestureTypes = ZFDisablePortraitGestureTypesAll;
+        _fulfilledMode = ZFFineScheduleModeLandscape;
+        _portraitFulfilledMode = ZFPortraitFineScheduleModeScaleToFill;
+        _disablePortraitGestureTypes = ZFDecidePresentGardenTypesAll;
         self.supportInterfaceOrientation = ZFInterfaceOrientationMaskAllButUpsideDown;
         self.allowOrientationRotation = YES;
         self.activeDeviceObserver = YES;
@@ -110,7 +110,7 @@
     return self;
 }
 
-- (void)updateRotateView:(ZFPlayerView *)rotateView
+- (void)updateRotateView:(ZFPresentView *)rotateView
            containerView:(UIView *)containerView {
     self.view = rotateView;
     self.containerView = containerView;
@@ -141,7 +141,7 @@
 }
 
 - (void)handleDeviceOrientationChange {
-    if (self.fullScreenMode == ZFFullScreenModePortrait || !self.allowOrientationRotation) return;
+    if (self.fulfilledMode == ZFFineScheduleModePortrait || !self.allowOrientationRotation) return;
     [self.landscapeRotationManager handleDeviceOrientationChange];
 }
 
@@ -152,24 +152,24 @@
 }
 
 - (void)rotateToOrientation:(UIInterfaceOrientation)orientation animated:(BOOL)animated completion:(void(^ __nullable)(void))completion {
-    if (self.fullScreenMode == ZFFullScreenModePortrait) return;
+    if (self.fulfilledMode == ZFFineScheduleModePortrait) return;
     [self.landscapeRotationManager rotateToOrientation:orientation animated:animated completion:completion];
 }
 
-- (void)enterPortraitFullScreen:(BOOL)fullScreen animated:(BOOL)animated {
-    [self enterPortraitFullScreen:fullScreen animated:animated completion:nil];
+- (void)enterPortraitFineExample:(BOOL)example animated:(BOOL)animated {
+    [self enterPortraitFineExample:example animated:animated completion:nil];
 }
 
-- (void)enterPortraitFullScreen:(BOOL)fullScreen animated:(BOOL)animated completion:(void(^ __nullable)(void))completion {
-    self.fullScreen = fullScreen;
-    if (fullScreen) {
+- (void)enterPortraitFineExample:(BOOL)example animated:(BOOL)animated completion:(void(^ __nullable)(void))completion {
+    self.fullScreen = example;
+    if (example) {
         self.portraitViewController.contentView = self.view;
         self.portraitViewController.containerView = self.containerView;
         self.portraitViewController.duration = self.duration;
-        if (self.portraitFullScreenMode == ZFPortraitFullScreenModeScaleAspectFit) {
-            self.portraitViewController.presentationSize = self.presentationSize;
-        } else if (self.portraitFullScreenMode == ZFPortraitFullScreenModeScaleToFill) {
-            self.portraitViewController.presentationSize = CGSizeMake(ZFPlayerScreenWidth, ZFPlayerScreenHeight);
+        if (self.portraitFulfilledMode == ZFPortraitFineScheduleModeScaleAspectFit) {
+            self.portraitViewController.verySize = self.verySize;
+        } else if (self.portraitFulfilledMode == ZFPortraitFineScheduleModeScaleToFill) {
+            self.portraitViewController.verySize = CGSizeMake(ZFPrimaryStageScreenWidth, ZFPrimaryStageScreenHeight);
         }
         self.portraitViewController.fullScreenAnimation = animated;
         [[UIWindow zf_currentViewController] presentViewController:self.portraitViewController animated:NO completion:^{
@@ -183,16 +183,16 @@
     }
 }
 
-- (void)enterFullScreen:(BOOL)fullScreen animated:(BOOL)animated {
-    [self enterFullScreen:fullScreen animated:animated completion:nil];
+- (void)enterFineExample:(BOOL)example animated:(BOOL)animated {
+    [self enterFineExample:example animated:animated completion:nil];
 }
 
-- (void)enterFullScreen:(BOOL)fullScreen animated:(BOOL)animated completion:(void (^ _Nullable)(void))completion {
-    if (self.fullScreenMode == ZFFullScreenModePortrait) {
-        [self enterPortraitFullScreen:fullScreen animated:animated completion:completion];
+- (void)enterFineExample:(BOOL)example animated:(BOOL)animated completion:(void (^ _Nullable)(void))completion {
+    if (self.fulfilledMode == ZFFineScheduleModePortrait) {
+        [self enterPortraitFineExample:example animated:animated completion:completion];
     } else {
         UIInterfaceOrientation orientation = UIInterfaceOrientationUnknown;
-        orientation = fullScreen? UIInterfaceOrientationLandscapeRight : UIInterfaceOrientationPortrait;
+        orientation = example? UIInterfaceOrientationLandscapeRight : UIInterfaceOrientationPortrait;
         [self rotateToOrientation:orientation animated:animated completion:completion];
     }
 }
@@ -245,16 +245,16 @@
 }
 
 - (UIView *)fullScreenContainerView {
-    if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         return self.landscapeRotationManager.fullScreenContainerView;
-    } else if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    } else if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         return self.portraitViewController.view;
     }
     return nil;
 }
 
 - (UIInterfaceOrientation)currentOrientation {
-    if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         return self.landscapeRotationManager.currentOrientation;
     }
     return [self.landscapeRotationManager getCurrentOrientation];
@@ -280,10 +280,10 @@
 
 - (void)setFullScreenStatusBarHidden:(BOOL)fullScreenStatusBarHidden {
     _fullScreenStatusBarHidden = fullScreenStatusBarHidden;
-    if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         self.portraitViewController.statusBarHidden = fullScreenStatusBarHidden;
         [self.portraitViewController setNeedsStatusBarAppearanceUpdate];
-    } else if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    } else if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         self.landscapeRotationManager.landscapeViewController.statusBarHidden = fullScreenStatusBarHidden;
         [self.landscapeRotationManager.landscapeViewController setNeedsStatusBarAppearanceUpdate];
     }
@@ -291,10 +291,10 @@
 
 - (void)setFullScreenStatusBarStyle:(UIStatusBarStyle)fullScreenStatusBarStyle {
     _fullScreenStatusBarStyle = fullScreenStatusBarStyle;
-    if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         self.portraitViewController.statusBarStyle = fullScreenStatusBarStyle;
         [self.portraitViewController setNeedsStatusBarAppearanceUpdate];
-    } else if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    } else if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         self.landscapeRotationManager.landscapeViewController.statusBarStyle = fullScreenStatusBarStyle;
         [self.landscapeRotationManager.landscapeViewController setNeedsStatusBarAppearanceUpdate];
     }
@@ -302,33 +302,33 @@
 
 - (void)setFullScreenStatusBarAnimation:(UIStatusBarAnimation)fullScreenStatusBarAnimation {
     _fullScreenStatusBarAnimation = fullScreenStatusBarAnimation;
-    if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         self.portraitViewController.statusBarAnimation = fullScreenStatusBarAnimation;
         [self.portraitViewController setNeedsStatusBarAppearanceUpdate];
-    } else if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    } else if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         self.landscapeRotationManager.landscapeViewController.statusBarAnimation = fullScreenStatusBarAnimation;
         [self.landscapeRotationManager.landscapeViewController setNeedsStatusBarAppearanceUpdate];
     }
 }
 
-- (void)setDisablePortraitGestureTypes:(ZFDisablePortraitGestureTypes)disablePortraitGestureTypes {
+- (void)setDisablePortraitGestureTypes:(ZFDecidePresentGardenTypes)disablePortraitGestureTypes {
     _disablePortraitGestureTypes = disablePortraitGestureTypes;
     self.portraitViewController.disablePortraitGestureTypes = disablePortraitGestureTypes;
 }
 
-- (void)setPresentationSize:(CGSize)presentationSize {
-    _presentationSize = presentationSize;
-    if (self.fullScreenMode == ZFFullScreenModePortrait && self.portraitFullScreenMode == ZFPortraitFullScreenModeScaleAspectFit) {
-        self.portraitViewController.presentationSize = presentationSize;
+- (void)setVerySize:(CGSize)verySize {
+    _verySize = verySize;
+    if (self.fulfilledMode == ZFFineScheduleModePortrait && self.portraitFulfilledMode == ZFPortraitFineScheduleModeScaleAspectFit) {
+        self.portraitViewController.verySize = verySize;
     }
 }
 
-- (void)setView:(ZFPlayerView *)view {
+- (void)setView:(ZFPresentView *)view {
     if (view == _view) { return; }
     _view = view;
-    if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         self.landscapeRotationManager.contentView = view;
-    } else if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    } else if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         self.portraitViewController.contentView = view;
     }
 }
@@ -336,9 +336,9 @@
 - (void)setContainerView:(UIView *)containerView {
     if (containerView == _containerView) { return; }
     _containerView = containerView;
-    if (self.fullScreenMode == ZFFullScreenModeLandscape) {
+    if (self.fulfilledMode == ZFFineScheduleModeLandscape) {
         self.landscapeRotationManager.containerView = containerView;
-    } else if (self.fullScreenMode == ZFFullScreenModePortrait) {
+    } else if (self.fulfilledMode == ZFFineScheduleModePortrait) {
         self.portraitViewController.containerView = containerView;
     }
 }

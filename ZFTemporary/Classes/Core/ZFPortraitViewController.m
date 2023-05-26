@@ -1,26 +1,4 @@
-//
-//  ZFPortraitViewController.m
-//  ZFPlayer
-//
-// Copyright (c) 2020年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+
 
 #import "ZFPortraitViewController.h"
 #import "ZFPersentInteractiveTransition.h"
@@ -174,13 +152,13 @@
     return _interactiveTransition;;
 }
 
-- (void)setDisablePortraitGestureTypes:(ZFDisablePortraitGestureTypes)disablePortraitGestureTypes {
+- (void)setDisablePortraitGestureTypes:(ZFDecidePresentGardenTypes)disablePortraitGestureTypes {
     _disablePortraitGestureTypes = disablePortraitGestureTypes;
     self.interactiveTransition.disablePortraitGestureTypes = disablePortraitGestureTypes;
 }
 
-- (void)setPresentationSize:(CGSize)presentationSize {
-    _presentationSize = presentationSize;
+- (void)setVerySize:(CGSize)verySize {
+    _verySize = verySize;
     self.transition.contentFullScreenRect = [self contentFullScreenRect];
     self.interactiveTransition.contentFullScreenRect = [self contentFullScreenRect];
     if (!self.fullScreenAnimation && self.isFullScreen) {
@@ -204,27 +182,27 @@
 }
 
 - (CGRect)contentFullScreenRect {
-    CGFloat videoWidth = self.presentationSize.width;
-    CGFloat videoHeight = self.presentationSize.height;
-    if (videoHeight == 0) {
+    CGFloat verticalWidth = self.verySize.width;
+    CGFloat verticalHeight = self.verySize.height;
+    if (verticalHeight == 0) {
         return CGRectZero;
     }
-    CGSize fullScreenScaleSize = CGSizeZero;
-    CGFloat screenScale = ZFPlayerScreenWidth/ZFPlayerScreenHeight;
-    CGFloat videoScale = videoWidth/videoHeight;
-    if (screenScale > videoScale) {
-        CGFloat height = ZFPlayerScreenHeight;
-        CGFloat width = height * videoScale;
-        fullScreenScaleSize = CGSizeMake(width, height);
+    CGSize screenScaleSize = CGSizeZero;
+    CGFloat screenScale = ZFPrimaryStageScreenWidth/ZFPrimaryStageScreenHeight;
+    CGFloat verticalScale = verticalWidth/verticalHeight;
+    if (screenScale > verticalScale) {
+        CGFloat height = ZFPrimaryStageScreenHeight;
+        CGFloat width = height * verticalScale;
+        screenScaleSize = CGSizeMake(width, height);
     } else {
-        CGFloat width = ZFPlayerScreenWidth;
-        CGFloat height = (CGFloat)(width / videoScale);
-        fullScreenScaleSize = CGSizeMake(width, height);
+        CGFloat width = ZFPrimaryStageScreenWidth;
+        CGFloat height = (CGFloat)(width / verticalScale);
+        screenScaleSize = CGSizeMake(width, height);
     }
     
-    videoWidth = fullScreenScaleSize.width;
-    videoHeight = fullScreenScaleSize.height;
-    CGRect rect = CGRectMake((ZFPlayerScreenWidth - videoWidth) / 2.0, (ZFPlayerScreenHeight - videoHeight) / 2.0, videoWidth, videoHeight);
+    verticalWidth = screenScaleSize.width;
+    verticalHeight = screenScaleSize.height;
+    CGRect rect = CGRectMake((ZFPrimaryStageScreenWidth - verticalWidth) / 2.0, (ZFPrimaryStageScreenHeight - verticalHeight) / 2.0, verticalWidth, verticalHeight);
     return rect;
 }
 

@@ -1,21 +1,16 @@
-//
-//  ZFSpeedLoadingView.m
-//  Pods-ZFPlayer_Example
-//
-//  Created by 紫枫 on 2018/6/27.
-//
 
-#import "ZFSpeedLoadingView.h"
+
+#import "ZFSpeedLaughView.h"
 #import "ZFNetworkSpeedMonitor.h"
 #import "UIView+ZFFrame.h"
 
-@interface ZFSpeedLoadingView ()
+@interface ZFSpeedLaughView ()
 
 @property (nonatomic, strong) ZFNetworkSpeedMonitor *speedMonitor;
 
 @end
 
-@implementation ZFSpeedLoadingView
+@implementation ZFSpeedLaughView
 
 - (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];

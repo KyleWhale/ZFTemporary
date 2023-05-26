@@ -1,9 +1,4 @@
-//
-//  HTAutoScrollLabel.m
-//  Movie
-//
-//  Created by wmz on 2023/4/24.
-//
+
 
 #import "HTAutoScrollLabel.h"
 #import "ZFUtilities.h"
@@ -13,21 +8,21 @@
 }
 - (id)initWithCoder:(NSCoder *)aDecoder{
     if (self = [super initWithCoder:aDecoder]) {
-        [self ht_commonInit];
+        [self commonInit];
     }
     return self;
 }
  
 - (id)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        [self ht_commonInit];
+        [self commonInit];
     }
     return self;
 }
  
-- (void)ht_commonInit {
+- (void)commonInit {
     self.scrollSpeed = 100 ;
-    self.pauseInterval = 2;
+    self.practiceInterval = 2;
     self.scrollEnabled = NO ;
     self.textLabel = UILabel.new;
     self.textLabel.textColor = UIColorFromHex(0xECECEC);
@@ -39,19 +34,19 @@
     }];
 }
 
-- (void)ht_startScrollIfNeed {
+- (void)startScrollIfNeed {
     [NSObject cancelPreviousPerformRequestsWithTarget:self];
     [self layoutIfNeeded] ;
     self.contentSize = self.textLabel.frame.size ;
     if ([self canScroll]) {
         hadScroll = YES;
-        [self ht_animationScroll];
+        [self animationScroll];
     }
 }
 
 
-- (void)ht_animationScroll {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(ht_animationScroll) object:nil];
+- (void)animationScroll {
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(animationScroll) object:nil];
     if(![self canScroll]) return;
     self.contentOffset = CGPointMake(-self.bounds.size.width, 0);
     [UIView animateWithDuration:self.textLabel.frame.size.width/self.scrollSpeed delay:0 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -62,7 +57,7 @@
         }
     } completion:^(BOOL finished) {
         if ([self canScroll]) {
-            [self performSelector:@selector(ht_animationScroll) withObject:nil afterDelay:self.pauseInterval];
+            [self performSelector:@selector(animationScroll) withObject:nil afterDelay:self.practiceInterval];
         }else{
             self.contentOffset = CGPointZero;
         }

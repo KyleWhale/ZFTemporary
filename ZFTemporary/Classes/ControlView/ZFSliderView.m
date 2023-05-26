@@ -1,45 +1,17 @@
-//
-//  ZFSliderView.m
-//  ZFPlayer
-//
-// Copyright (c) 2016年 任子丰 ( http://github.com/renzifeng )
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+
 
 #import "ZFSliderView.h"
 #import "UIView+ZFFrame.h"
 
-/** 滑块的大小 */
 static const CGFloat kSliderBtnWH = 19.0;
-/** 进度的高度 */
 static const CGFloat kProgressH = 1.0;
-/** 拖动slider动画的时间*/
 static const CGFloat kAnimate = 0.3;
 
 @implementation ZFSliderButton
 
-// 重写此方法将按钮的点击范围扩大
 - (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event {
     CGRect bounds = self.bounds;
-    // 扩大点击区域
     bounds = CGRectInset(bounds, -20, -20);
-    // 若点击的点在新的bounds里面。就返回yes
     return CGRectContainsPoint(bounds, point);
 }
 
@@ -47,13 +19,9 @@ static const CGFloat kAnimate = 0.3;
 
 @interface ZFSliderView ()
 
-/** 进度背景 */
-@property (nonatomic, strong) UIImageView *bgProgressView;
-/** 缓存进度 */
-@property (nonatomic, strong) UIImageView *bufferProgressView;
-/** 滑动进度 */
-@property (nonatomic, strong) UIImageView *sliderProgressView;
-/** 滑块 */
+@property (nonatomic, strong) UIImageView *backView;
+@property (nonatomic, strong) UIImageView *brownView;
+@property (nonatomic, strong) UIImageView *stateView;
 @property (nonatomic, strong) ZFSliderButton *sliderBtn;
 
 @property (nonatomic, strong) UIView *loadingBarView;
@@ -84,7 +52,7 @@ static const CGFloat kAnimate = 0.3;
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    if (isnan(self.value) || isnan(self.bufferValue)) return;
+    if (isnan(self.value) || isnan(self.basketValue)) return;
 
     CGFloat min_x = 0;
     CGFloat min_y = 0;
@@ -97,30 +65,30 @@ static const CGFloat kAnimate = 0.3;
     min_w = min_view_w;
     min_y = 0;
     min_h = self.sliderHeight;
-    self.bgProgressView.frame = CGRectMake(min_x, min_y, min_w, min_h);
+    self.backView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
     min_x = 0;
     min_y = 0;
     min_w = self.thumbSize.width;
     min_h = self.thumbSize.height;
     self.sliderBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.sliderBtn.zf_centerX = self.bgProgressView.zf_width * self.value;
+    self.sliderBtn.zf_centerX = self.backView.zf_width * self.value;
     
     min_x = 0;
     min_y = 0;
     if (self.sliderBtn.hidden) {
-        min_w = self.bgProgressView.zf_width * self.value;
+        min_w = self.backView.zf_width * self.value;
     } else {
         min_w = self.sliderBtn.zf_centerX;
     }
     min_h = self.sliderHeight;
-    self.sliderProgressView.frame = CGRectMake(min_x, min_y, min_w, min_h);
+    self.stateView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
     min_x = 0;
     min_y = 0;
-    min_w = self.bgProgressView.zf_width * self.bufferValue;
+    min_w = self.backView.zf_width * self.basketValue;
     min_h = self.sliderHeight;
-    self.bufferProgressView.frame = CGRectMake(min_x, min_y, min_w, min_h);
+    self.brownView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
     min_w = 0.1;
     min_h = self.sliderHeight;
@@ -128,30 +96,25 @@ static const CGFloat kAnimate = 0.3;
     min_y = (min_view_h - min_h)/2;
     self.loadingBarView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
-    self.bgProgressView.zf_centerY     = min_view_h * 0.5;
-    self.bufferProgressView.zf_centerY = min_view_h * 0.5;
-    self.sliderProgressView.zf_centerY = min_view_h * 0.5;
+    self.backView.zf_centerY     = min_view_h * 0.5;
+    self.brownView.zf_centerY = min_view_h * 0.5;
+    self.stateView.zf_centerY = min_view_h * 0.5;
     self.sliderBtn.zf_centerY          = min_view_h * 0.5;
 }
 
-/**
- 添加子视图
- */
 - (void)addSubViews {
     self.thumbSize = CGSizeMake(kSliderBtnWH, kSliderBtnWH);
     self.sliderHeight = kProgressH;
     self.backgroundColor = [UIColor clearColor];
-    [self addSubview:self.bgProgressView];
-    [self addSubview:self.bufferProgressView];
-    [self addSubview:self.sliderProgressView];
+    [self addSubview:self.backView];
+    [self addSubview:self.brownView];
+    [self addSubview:self.stateView];
     [self addSubview:self.sliderBtn];
     [self addSubview:self.loadingBarView];
     
-    // 添加点击手势
     self.tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapped:)];
     [self addGestureRecognizer:self.tapGesture];
     
-    // 添加滑动手势
     UIPanGestureRecognizer *sliderGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(sliderGesture:)];
     [self addGestureRecognizer:sliderGesture];
 }
@@ -160,17 +123,17 @@ static const CGFloat kAnimate = 0.3;
 
 - (void)setMaximumTrackTintColor:(UIColor *)maximumTrackTintColor {
     _maximumTrackTintColor = maximumTrackTintColor;
-    self.bgProgressView.backgroundColor = maximumTrackTintColor;
+    self.backView.backgroundColor = maximumTrackTintColor;
 }
 
 - (void)setMinimumTrackTintColor:(UIColor *)minimumTrackTintColor {
     _minimumTrackTintColor = minimumTrackTintColor;
-    self.sliderProgressView.backgroundColor = minimumTrackTintColor;
+    self.stateView.backgroundColor = minimumTrackTintColor;
 }
 
-- (void)setBufferTrackTintColor:(UIColor *)bufferTrackTintColor {
-    _bufferTrackTintColor = bufferTrackTintColor;
-    self.bufferProgressView.backgroundColor = bufferTrackTintColor;
+- (void)setBoardTintColor:(UIColor *)boardTintColor {
+    _boardTintColor = boardTintColor;
+    self.brownView.backgroundColor = boardTintColor;
 }
 
 - (void)setLoadingTintColor:(UIColor *)loadingTintColor {
@@ -180,20 +143,20 @@ static const CGFloat kAnimate = 0.3;
 
 - (void)setMaximumTrackImage:(UIImage *)maximumTrackImage {
     _maximumTrackImage = maximumTrackImage;
-    self.bgProgressView.image = maximumTrackImage;
+    self.backView.image = maximumTrackImage;
     self.maximumTrackTintColor = [UIColor clearColor];
 }
 
 - (void)setMinimumTrackImage:(UIImage *)minimumTrackImage {
     _minimumTrackImage = minimumTrackImage;
-    self.sliderProgressView.image = minimumTrackImage;
+    self.stateView.image = minimumTrackImage;
     self.minimumTrackTintColor = [UIColor clearColor];
 }
 
 - (void)setBufferTrackImage:(UIImage *)bufferTrackImage {
     _bufferTrackImage = bufferTrackImage;
-    self.bufferProgressView.image = bufferTrackImage;
-    self.bufferTrackTintColor = [UIColor clearColor];
+    self.brownView.image = bufferTrackImage;
+    self.boardTintColor = [UIColor clearColor];
 }
 
 - (void)setBackgroundImage:(UIImage *)image forState:(UIControlState)state {
@@ -209,18 +172,18 @@ static const CGFloat kAnimate = 0.3;
     value = MIN(1.0, value);
     _value = value;
     if (self.sliderBtn.hidden) {
-        self.sliderProgressView.zf_width = self.bgProgressView.zf_width * value;
+        self.stateView.zf_width = self.backView.zf_width * value;
     } else {
-        self.sliderBtn.zf_centerX = self.bgProgressView.zf_width * value;
-        self.sliderProgressView.zf_width = self.sliderBtn.zf_centerX;
+        self.sliderBtn.zf_centerX = self.backView.zf_width * value;
+        self.stateView.zf_width = self.sliderBtn.zf_centerX;
     }
 }
 
-- (void)setBufferValue:(float)bufferValue {
-    if (isnan(bufferValue)) return;
-    bufferValue = MIN(1.0, bufferValue);
-    _bufferValue = bufferValue;
-    self.bufferProgressView.zf_width = self.bgProgressView.zf_width * bufferValue;
+- (void)setBasketValue:(float)basketValue {
+    if (isnan(basketValue)) return;
+    basketValue = MIN(1.0, basketValue);
+    _basketValue = basketValue;
+    self.brownView.zf_width = self.backView.zf_width * basketValue;
 }
 
 - (void)setAllowTapped:(BOOL)allowTapped {
@@ -233,42 +196,38 @@ static const CGFloat kAnimate = 0.3;
 - (void)setSliderHeight:(CGFloat)sliderHeight {
     if (isnan(sliderHeight)) return;
     _sliderHeight = sliderHeight;
-    self.bgProgressView.zf_height     = sliderHeight;
-    self.bufferProgressView.zf_height = sliderHeight;
-    self.sliderProgressView.zf_height = sliderHeight;
+    self.backView.zf_height     = sliderHeight;
+    self.brownView.zf_height = sliderHeight;
+    self.stateView.zf_height = sliderHeight;
 }
 
 - (void)setSliderRadius:(CGFloat)sliderRadius {
     if (isnan(sliderRadius)) return;
     _sliderRadius = sliderRadius;
-    self.bgProgressView.layer.cornerRadius      = sliderRadius;
-    self.bufferProgressView.layer.cornerRadius  = sliderRadius;
-    self.sliderProgressView.layer.cornerRadius  = sliderRadius;
-    self.bgProgressView.layer.masksToBounds     = YES;
-    self.bufferProgressView.layer.masksToBounds = YES;
-    self.sliderProgressView.layer.masksToBounds = YES;
+    self.backView.layer.cornerRadius      = sliderRadius;
+    self.brownView.layer.cornerRadius  = sliderRadius;
+    self.stateView.layer.cornerRadius  = sliderRadius;
+    self.backView.layer.masksToBounds     = YES;
+    self.brownView.layer.masksToBounds = YES;
+    self.stateView.layer.masksToBounds = YES;
 }
 
 - (void)setIsHideSliderBlock:(BOOL)isHideSliderBlock {
     _isHideSliderBlock = isHideSliderBlock;
-    // 隐藏滑块，滑杆不可点击
     if (isHideSliderBlock) {
         self.sliderBtn.hidden = YES;
-        self.bgProgressView.zf_left     = 0;
-        self.bufferProgressView.zf_left = 0;
-        self.sliderProgressView.zf_left = 0;
+        self.backView.zf_left     = 0;
+        self.brownView.zf_left = 0;
+        self.stateView.zf_left = 0;
         self.allowTapped = NO;
     }
 }
 
-/**
- *  Starts animation of the spinner.
- */
 - (void)startAnimating {
     if (self.isLoading) return;
     self.isLoading = YES;
-    self.bufferProgressView.hidden = YES;
-    self.sliderProgressView.hidden = YES;
+    self.brownView.hidden = YES;
+    self.stateView.hidden = YES;
     self.sliderBtn.hidden = YES;
     self.loadingBarView.hidden = NO;
     
@@ -293,13 +252,10 @@ static const CGFloat kAnimate = 0.3;
     [self.loadingBarView.layer addAnimation:animationGroup forKey:@"loading"];
 }
 
-/**
- *  Stops animation of the spinnner.
- */
 - (void)stopAnimating {
     self.isLoading = NO;
-    self.bufferProgressView.hidden = NO;
-    self.sliderProgressView.hidden = NO;
+    self.brownView.hidden = NO;
+    self.stateView.hidden = NO;
     self.sliderBtn.hidden = self.isHideSliderBlock;
     self.loadingBarView.hidden = YES;
     [self.loadingBarView.layer removeAllAnimations];
@@ -314,7 +270,7 @@ static const CGFloat kAnimate = 0.3;
         }
             break;
         case UIGestureRecognizerStateChanged: {
-            [self sliderBtnDragMoving:self.sliderBtn point:[gesture locationInView:self.bgProgressView]];
+            [self sliderBtnDragMoving:self.sliderBtn point:[gesture locationInView:self.backView]];
         }
             break;
         case UIGestureRecognizerStateEnded: {
@@ -349,11 +305,8 @@ static const CGFloat kAnimate = 0.3;
 }
 
 - (void)sliderBtnDragMoving:(UIButton *)btn point:(CGPoint)touchPoint {
-    // 点击的位置
     CGPoint point = touchPoint;
-    // 获取进度值 由于btn是从 0-(self.width - btn.width)
-    CGFloat value = (point.x - btn.zf_width * 0.5) / self.bgProgressView.zf_width;
-    // value的值需在0-1之间
+    CGFloat value = (point.x - btn.zf_width * 0.5) / self.backView.zf_width;
     value = value >= 1.0 ? 1.0 : value <= 0.0 ? 0.0 : value;
     if (self.value == value) return;
     self.isForward = self.value < value;
@@ -364,9 +317,8 @@ static const CGFloat kAnimate = 0.3;
 }
 
 - (void)tapped:(UITapGestureRecognizer *)tap {
-    CGPoint point = [tap locationInView:self.bgProgressView];
-    // 获取进度
-    CGFloat value = (point.x - self.sliderBtn.zf_width * 0.5) * 1.0 / self.bgProgressView.zf_width;
+    CGPoint point = [tap locationInView:self.backView];
+    CGFloat value = (point.x - self.sliderBtn.zf_width * 0.5) * 1.0 / self.backView.zf_width;
     value = value >= 1.0 ? 1.0 : value <= 0 ? 0 : value;
     self.value = value;
     if ([self.delegate respondsToSelector:@selector(sliderTapped:)]) {
@@ -376,34 +328,34 @@ static const CGFloat kAnimate = 0.3;
 
 #pragma mark - getter
 
-- (UIView *)bgProgressView {
-    if (!_bgProgressView) {
-        _bgProgressView = [UIImageView new];
-        _bgProgressView.backgroundColor = [UIColor grayColor];
-        _bgProgressView.contentMode = UIViewContentModeScaleAspectFill;
-        _bgProgressView.clipsToBounds = YES;
+- (UIView *)backView {
+    if (!_backView) {
+        _backView = [UIImageView new];
+        _backView.backgroundColor = [UIColor grayColor];
+        _backView.contentMode = UIViewContentModeScaleAspectFill;
+        _backView.clipsToBounds = YES;
     }
-    return _bgProgressView;
+    return _backView;
 }
 
-- (UIView *)bufferProgressView {
-    if (!_bufferProgressView) {
-        _bufferProgressView = [UIImageView new];
-        _bufferProgressView.backgroundColor = [UIColor whiteColor];
-        _bufferProgressView.contentMode = UIViewContentModeScaleAspectFill;
-        _bufferProgressView.clipsToBounds = YES;
+- (UIView *)brownView {
+    if (!_brownView) {
+        _brownView = [UIImageView new];
+        _brownView.backgroundColor = [UIColor whiteColor];
+        _brownView.contentMode = UIViewContentModeScaleAspectFill;
+        _brownView.clipsToBounds = YES;
     }
-    return _bufferProgressView;
+    return _brownView;
 }
 
-- (UIView *)sliderProgressView {
-    if (!_sliderProgressView) {
-        _sliderProgressView = [UIImageView new];
-        _sliderProgressView.backgroundColor = [UIColor redColor];
-        _sliderProgressView.contentMode = UIViewContentModeScaleAspectFill;
-        _sliderProgressView.clipsToBounds = YES;
+- (UIView *)stateView {
+    if (!_stateView) {
+        _stateView = [UIImageView new];
+        _stateView.backgroundColor = [UIColor redColor];
+        _stateView.contentMode = UIViewContentModeScaleAspectFill;
+        _stateView.clipsToBounds = YES;
     }
-    return _sliderProgressView;
+    return _stateView;
 }
 
 - (ZFSliderButton *)sliderBtn {
