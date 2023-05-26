@@ -1,5 +1,5 @@
 
-#import "HTAutoScrollLabel.h"
+#import "ZFAutoScrollLabel.h"
 #import <UIKit/UIKit.h>
 #import "ZFSliderView.h"
 #import "ZFPresentController.h"
@@ -11,7 +11,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) UIButton *backBtn;
 
-@property (nonatomic, strong) HTAutoScrollLabel *titleLabel;
+@property (nonatomic, strong) ZFAutoScrollLabel *titleLabel;
 
 @property (nonatomic, strong, readonly) UIView *bottomToolView;
 

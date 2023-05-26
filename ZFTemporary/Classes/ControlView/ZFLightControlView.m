@@ -721,9 +721,9 @@
     return _backBtn;
 }
 
-- (HTAutoScrollLabel *)titleLabel {
+- (ZFAutoScrollLabel *)titleLabel {
     if (!_titleLabel) {
-        _titleLabel = [[HTAutoScrollLabel alloc] init];
+        _titleLabel = [[ZFAutoScrollLabel alloc] init];
     }
     return _titleLabel;
 }

@@ -2,7 +2,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ZFSliderView.h"
-#import "HTAutoScrollLabel.h"
+#import "ZFAutoScrollLabel.h"
 #if __has_include(<ZFPrimaryStage/ZFPresentController.h>)
 #import <ZFPrimaryStage/ZFPresentController.h>
 #else
@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) UIView *topToolView;
 
-@property (nonatomic, strong, readonly) HTAutoScrollLabel *titleLabel;
+@property (nonatomic, strong, readonly) ZFAutoScrollLabel *titleLabel;
 
 @property (nonatomic, strong) UIButton *bottomPracticeButton;
 

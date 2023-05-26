@@ -46,7 +46,7 @@
 		019442342A20B2C400F46FF6 /* ZFLandscapeViewController_iOS15.m in Sources */ = {isa = PBXBuildFile; fileRef = 019442082A20B2C400F46FF6 /* ZFLandscapeViewController_iOS15.m */; };
 		019442352A20B2C400F46FF6 /* ZFKVOController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194420A2A20B2C400F46FF6 /* ZFKVOController.m */; };
 		019442362A20B2C400F46FF6 /* ZFLandscapeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194420B2A20B2C400F46FF6 /* ZFLandscapeViewController.m */; };
-		019442372A20B2C400F46FF6 /* HTAutoScrollLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194420C2A20B2C400F46FF6 /* HTAutoScrollLabel.m */; };
+		019442372A20B2C400F46FF6 /* ZFAutoScrollLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194420C2A20B2C400F46FF6 /* ZFAutoScrollLabel.m */; };
 		019442382A20B2C400F46FF6 /* ZFReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194420F2A20B2C400F46FF6 /* ZFReachabilityManager.m */; };
 		019442392A20B2C400F46FF6 /* ZFLandscapeRotationManager_iOS15.m in Sources */ = {isa = PBXBuildFile; fileRef = 019442112A20B2C400F46FF6 /* ZFLandscapeRotationManager_iOS15.m */; };
 		0194423A2A20B2C400F46FF6 /* ZFPlayer.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 019442152A20B2C400F46FF6 /* ZFPlayer.bundle */; };
@@ -104,7 +104,7 @@
 		019441ED2A20B2C400F46FF6 /* ZFFloatView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFFloatView.h; sourceTree = "<group>"; };
 		019441EE2A20B2C400F46FF6 /* ZFPresentTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPresentTransition.h; sourceTree = "<group>"; };
 		019441EF2A20B2C400F46FF6 /* ZFLandscapeWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFLandscapeWindow.m; sourceTree = "<group>"; };
-		019441F02A20B2C400F46FF6 /* HTAutoScrollLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HTAutoScrollLabel.h; sourceTree = "<group>"; };
+		019441F02A20B2C400F46FF6 /* ZFAutoScrollLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFAutoScrollLabel.h; sourceTree = "<group>"; };
 		019441F12A20B2C400F46FF6 /* ZFKVOController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFKVOController.h; sourceTree = "<group>"; };
 		019441F22A20B2C400F46FF6 /* ZFPresentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPresentView.m; sourceTree = "<group>"; };
 		019441F32A20B2C400F46FF6 /* ZFLandscapeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFLandscapeViewController.h; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 		019442092A20B2C400F46FF6 /* ZFPresentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPresentView.h; sourceTree = "<group>"; };
 		0194420A2A20B2C400F46FF6 /* ZFKVOController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFKVOController.m; sourceTree = "<group>"; };
 		0194420B2A20B2C400F46FF6 /* ZFLandscapeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFLandscapeViewController.m; sourceTree = "<group>"; };
-		0194420C2A20B2C400F46FF6 /* HTAutoScrollLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HTAutoScrollLabel.m; sourceTree = "<group>"; };
+		0194420C2A20B2C400F46FF6 /* ZFAutoScrollLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFAutoScrollLabel.m; sourceTree = "<group>"; };
 		0194420D2A20B2C400F46FF6 /* ZFLandscapeWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFLandscapeWindow.h; sourceTree = "<group>"; };
 		0194420E2A20B2C400F46FF6 /* ZFPresentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPresentController.h; sourceTree = "<group>"; };
 		0194420F2A20B2C400F46FF6 /* ZFReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFReachabilityManager.m; sourceTree = "<group>"; };
@@ -247,8 +247,8 @@
 		019441E82A20B2C400F46FF6 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				019441F02A20B2C400F46FF6 /* HTAutoScrollLabel.h */,
-				0194420C2A20B2C400F46FF6 /* HTAutoScrollLabel.m */,
+				019441F02A20B2C400F46FF6 /* ZFAutoScrollLabel.h */,
+				0194420C2A20B2C400F46FF6 /* ZFAutoScrollLabel.m */,
 				019442032A20B2C400F46FF6 /* UIScrollView+conditions.h */,
 				019441EC2A20B2C400F46FF6 /* UIScrollView+conditions.m */,
 				019441ED2A20B2C400F46FF6 /* ZFFloatView.h */,
@@ -437,7 +437,7 @@
 				019442322A20B2C400F46FF6 /* ZFLandscapeRotationManager_iOS16.m in Sources */,
 				019442282A20B2C400F46FF6 /* ZFLandscapeWindow.m in Sources */,
 				0194421B2A20B2C400F46FF6 /* ZFPresentActionManager.m in Sources */,
-				019442372A20B2C400F46FF6 /* HTAutoScrollLabel.m in Sources */,
+				019442372A20B2C400F46FF6 /* ZFAutoScrollLabel.m in Sources */,
 				019442192A20B2C400F46FF6 /* ZFLightControlView.m in Sources */,
 				019442212A20B2C400F46FF6 /* ZFSmallFloatControlView.m in Sources */,
 				0194422E2A20B2C400F46FF6 /* ZFPresentController.m in Sources */,

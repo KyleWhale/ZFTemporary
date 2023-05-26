@@ -1,9 +1,9 @@
 
 
-#import "HTAutoScrollLabel.h"
+#import "ZFAutoScrollLabel.h"
 #import "ZFUtilities.h"
 
-@implementation HTAutoScrollLabel{
+@implementation ZFAutoScrollLabel{
     BOOL hadScroll;
 }
 - (id)initWithCoder:(NSCoder *)aDecoder{

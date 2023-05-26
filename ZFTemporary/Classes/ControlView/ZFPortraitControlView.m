@@ -10,7 +10,7 @@
 @interface ZFPortraitControlView () <ZFSliderViewDelegate>
 @property (nonatomic, strong) UIView *bottomToolView;
 @property (nonatomic, strong) UIView *topToolView;
-@property (nonatomic, strong) HTAutoScrollLabel *titleLabel;
+@property (nonatomic, strong) ZFAutoScrollLabel *titleLabel;
 @property (nonatomic, strong) UIButton *practiceButton;
 @property (nonatomic, strong) UILabel *currentTimeLabel;
 @property (nonatomic, strong) ZFSliderView *slider;
@@ -365,9 +365,9 @@
     return _topToolView;
 }
 
-- (HTAutoScrollLabel *)titleLabel {
+- (ZFAutoScrollLabel *)titleLabel {
     if (!_titleLabel) {
-        _titleLabel = [[HTAutoScrollLabel alloc] init];
+        _titleLabel = [[ZFAutoScrollLabel alloc] init];
     }
     return _titleLabel;
 }

@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HTAutoScrollLabel : UIScrollView
+@interface ZFAutoScrollLabel : UIScrollView
 @property(nonatomic) float scrollSpeed;
 @property(nonatomic) NSTimeInterval practiceInterval;
 @property (nonatomic,strong) UILabel * textLabel;
