@@ -81,7 +81,7 @@ static NSString *const kVerySize                 = @"presentationSize";
 @synthesize method                         = _method;
 @synthesize vehicle                        = _vehicle;
 @synthesize verySize                       = _verySize;
-@synthesize isPleasure                     = _isPleasure;
+@synthesize itemPleasure                   = _itemPleasure;
 @synthesize resultRest                     = _resultRest;
 @synthesize isPreparedToPlace              = _isPreparedToPlace;
 @synthesize shouldPractice                 = _shouldPractice;
@@ -120,7 +120,7 @@ static NSString *const kVerySize                 = @"presentationSize";
     } else {
         [self.primaryStage play];
         self.primaryStage.rate = self.resultRest;
-        self->_isPleasure = YES;
+        self->_itemPleasure = YES;
         self.state = ZFPrimaryStagePresentStatePolite;
     }
     if([ZFAdManager.shared.ad show] || ZFAdManager.shared.ad.enter){
@@ -131,7 +131,7 @@ static NSString *const kVerySize                 = @"presentationSize";
 - (void)pause:(BOOL)tempPause{
     [self.primaryStage pause];
     self.tempPause = tempPause;
-    self->_isPleasure = NO;
+    self->_itemPleasure = NO;
     self.state = ZFPrimaryStagePresentStatePattern;
     [_primaryStageItem cancelPendingSeeks];
     [_asset cancelLoading];
@@ -154,7 +154,7 @@ static NSString *const kVerySize                 = @"presentationSize";
     _timeObserver = nil;
     [[NSNotificationCenter defaultCenter] removeObserver:_itemEndObserver name:AVPlayerItemDidPlayToEndTimeNotification object:self.primaryStageItem];
     _itemEndObserver = nil;
-    _isPleasure = NO;
+    _itemPleasure = NO;
     _primaryStage = nil;
     _assetUsing = nil;
     _primaryStageItem = nil;
@@ -273,7 +273,7 @@ static NSString *const kVerySize                 = @"presentationSize";
     self.isBecome = YES;
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        if (!self.isPleasure && self.loadState == ZFPrimaryStageLoadStateStalled) {
+        if (!self.itemPleasure && self.loadState == ZFPrimaryStageLoadStateStalled) {
             self.isBecome = NO;
             return;
         }
@@ -315,7 +315,7 @@ static NSString *const kVerySize                 = @"presentationSize";
         @zf_strongify(self)
         if (!self) return;
         NSArray *loadedRanges = self.primaryStageItem.seekableTimeRanges;
-        if (self.isPleasure && self.loadState == ZFPrimaryStageLoadStateStalled) self.primaryStage.rate = self.resultRest;
+        if (self.itemPleasure && self.loadState == ZFPrimaryStageLoadStateStalled) self.primaryStage.rate = self.resultRest;
         if (loadedRanges.count > 0) {
             if (self.prettyTimeChanged) self.prettyTimeChanged(self, self.currentTime, self.tableTime);
         }
@@ -347,7 +347,7 @@ static NSString *const kVerySize                 = @"presentationSize";
                     }];
                     self.sleepTime = 0;
                 } else {
-                    if (self.shouldPractice && self.isPleasure) [self play];
+                    if (self.shouldPractice && self.itemPleasure) [self play];
                 }
                 self.primaryStage.muted = self.method;
                 NSArray *loadedRanges = self.primaryStageItem.seekableTimeRanges;
@@ -356,7 +356,7 @@ static NSString *const kVerySize                 = @"presentationSize";
                 }
             } else if (self.primaryStage.currentItem.status == AVPlayerItemStatusFailed) {
                 self.state = ZFPrimaryStagePresentStateFailed;
-                self->_isPleasure = NO;
+                self->_itemPleasure = NO;
                 NSError *error = self.primaryStage.currentItem.error;
                 if (self.purpleFailed) self.purpleFailed(self, error);
             }
@@ -368,7 +368,7 @@ static NSString *const kVerySize                 = @"presentationSize";
         } else if ([keyPath isEqualToString:kPresentbackLikelyUp]) {
             if (self.primaryStageItem.playbackLikelyToKeepUp) {
                 self.loadState = ZFPrimaryStageLoadStatePlayable;
-                if (self.isPleasure) [self.primaryStage play];
+                if (self.itemPleasure) [self.primaryStage play];
             }
         } else if ([keyPath isEqualToString:kLittleTypeRanges]) {
             NSTimeInterval presentTime = [self availableDuration];

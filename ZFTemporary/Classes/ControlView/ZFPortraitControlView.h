@@ -43,9 +43,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) ZFFineScheduleMode fulfilledMode;
 
-@property (nonatomic, strong) UIButton *adBTN;
-@property (nonatomic, strong) UIButton *shareBTN;
-@property (nonatomic, strong) UIButton *ccBTN;
+@property (nonatomic, strong) UIButton *adButton;
+@property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) UIButton *ccButton;
 
 - (void)resetControlledView;
 

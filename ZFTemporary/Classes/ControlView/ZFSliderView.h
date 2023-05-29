@@ -48,9 +48,9 @@
 
 @property (nonatomic, assign) CGFloat sliderRadius;
 
-@property (nonatomic, assign) BOOL isHideSliderBlock;
+@property (nonatomic, assign) BOOL hideSliderBlock;
 
-@property (nonatomic, assign) BOOL isdragging;
+@property (nonatomic, assign) BOOL itemDragging;
 
 @property (nonatomic, assign) BOOL isForward;
 

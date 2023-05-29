@@ -19,7 +19,7 @@
 @property (nonatomic, strong) ZFSliderView *fastProperView;
 @property (nonatomic, strong) UILabel *firstLabel;
 @property (nonatomic, strong) UIImageView *firstImageView;
-@property (nonatomic, strong) UIButton *errorBtn;
+@property (nonatomic, strong) UIButton *errorButton;
 @property (nonatomic, strong) ZFSliderView *bottomPresentView;
 @property (nonatomic, assign, getter=isShowing) BOOL showing;
 @property (nonatomic, assign, getter=isPresentEnd) BOOL presentEnd;
@@ -50,7 +50,7 @@
         self.lightControlView.hidden = YES;
         self.floatControlView.hidden = YES;
         self.tempTp = YES;
-        self.view1Show = YES;
+        self.primaryViewShow = YES;
         self.horizontalPanShowControlView = YES;
         self.fadeTime = 0.25;
         self.hiddenTime = 2.5;
@@ -85,9 +85,9 @@
     self.laughView.zf_centerY = self.zf_centerY + 10;
     
     min_w = 250;
-    min_h = 30;
-    self.errorBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.errorBtn.center = self.center;
+    min_h = 40;
+    self.errorButton.frame = CGRectMake(min_x, min_y, min_w, min_h);
+    self.errorButton.center = self.center;
     
     min_w = 140;
     min_h = 80;
@@ -136,7 +136,7 @@
     [self addSubview:self.lightControlView];
     [self addSubview:self.floatControlView];
     [self addSubview:self.laughView];
-    [self addSubview:self.errorBtn];
+    [self addSubview:self.errorButton];
     [self addSubview:self.fastView];
     [self.fastView addSubview:self.firstImageView];
     [self.fastView addSubview:self.firstLabel];
@@ -145,7 +145,7 @@
     [self addSubview:self.vehicleView];
 }
 
-- (void)autoOutView1 {
+- (void)primaryStateChangeView {
     self.controlViewAppeared = YES;
     [self cancelAutoView1];
     @zf_weakify(self)
@@ -172,7 +172,7 @@
         if (self.primaryPretty.isFullScreen) {
             [self.lightControlView hideControlView];
         } else {
-            if (!self.primaryPretty.isSmallFloatViewShow) {
+            if (!self.primaryPretty.smallFloatViewShow) {
                 [self.portraitControlView hideControlView];
             }
         }
@@ -186,12 +186,12 @@
     if (self.controlViewAppearedCallback) {
         self.controlViewAppearedCallback(YES);
     }
-    [self autoOutView1];
+    [self primaryStateChangeView];
     [UIView animateWithDuration:animated ? self.fadeTime : 0 animations:^{
         if (self.primaryPretty.isFullScreen) {
             [self.lightControlView showControlView];
         } else {
-            if (!self.primaryPretty.isSmallFloatViewShow) {
+            if (!self.primaryPretty.smallFloatViewShow) {
                 [self.portraitControlView showControlView];
             }
         }
@@ -222,7 +222,7 @@
     self.bottomPresentView.value = 0;
     self.bottomPresentView.basketValue = 0;
     self.floatControlView.hidden = YES;
-    self.errorBtn.hidden = YES;
+    self.errorButton.hidden = YES;
     self.vehicleView.hidden = YES;
     self.portraitControlView.hidden = self.primaryPretty.isFullScreen;
     self.lightControlView.hidden = !self.primaryPretty.isFullScreen;
@@ -272,7 +272,7 @@
 
 - (BOOL)gestureTriggerCondition:(ZFPresentGestureControl *)gestureControl gestureType:(ZFPrimaryStageGestureType)gestureType gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer touch:(nonnull UITouch *)touch {
     CGPoint point = [touch locationInView:self];
-    if (self.primaryPretty.isSmallFloatViewShow && !self.primaryPretty.isFullScreen && gestureType != ZFPrimaryStageGestureTypeSingleTap) {
+    if (self.primaryPretty.smallFloatViewShow && !self.primaryPretty.isFullScreen && gestureType != ZFPrimaryStageGestureTypeSingleTap) {
         return NO;
     }
     if (self.primaryPretty.isFullScreen) {
@@ -294,7 +294,7 @@
 
 - (void)gestureSingleTapped:(ZFPresentGestureControl *)gestureControl {
     if (!self.primaryPretty) return;
-    if (self.primaryPretty.isSmallFloatViewShow && !self.primaryPretty.isFullScreen) {
+    if (self.primaryPretty.smallFloatViewShow && !self.primaryPretty.isFullScreen) {
         [self.primaryPretty enterFineExample:YES animated:YES];
     } else {
         if (self.controlViewAppeared) {
@@ -351,9 +351,9 @@
             @zf_strongify(self)
             [self.portraitControlView sliderChangeEnded];
             [self.lightControlView sliderChangeEnded];
-            self.bottomPresentView.isdragging = NO;
+            self.bottomPresentView.itemDragging = NO;
             if (self.controlViewAppeared) {
-                [self autoOutView1];
+                [self primaryStateChangeView];
             }
         }];
         if (self.tempTp) {
@@ -383,7 +383,7 @@
     if (state == ZFPrimaryStagePresentStatePolite) {
         [self.portraitControlView practiceSelected:YES];
         [self.lightControlView practiceSelected:YES];
-        self.errorBtn.hidden = YES;
+        self.errorButton.hidden = YES;
         if (practiceScreen.periodManager.loadState == ZFPrimaryStageLoadStateStalled && !self.showLoading) {
             [self.laughView startAnimating];
         } else if ((practiceScreen.periodManager.loadState == ZFPrimaryStageLoadStateStalled || practiceScreen.periodManager.loadState == ZFPrimaryStageLoadStatePrepare) && self.showLoading) {
@@ -393,9 +393,9 @@
         [self.portraitControlView practiceSelected:NO];
         [self.lightControlView practiceSelected:NO];
         [self.laughView stopAnimating];
-        self.errorBtn.hidden = YES;
+        self.errorButton.hidden = YES;
     } else if (state == ZFPrimaryStagePresentStateFailed) {
-        self.errorBtn.hidden = NO;
+        self.errorButton.hidden = NO;
         [self.laughView stopAnimating];
     }
 }
@@ -407,16 +407,16 @@
         [self.lightControlView practiceSelected:practiceScreen.periodManager.shouldPractice];
     } else if (state == ZFPrimaryStageLoadStatePlaythroughOK || state == ZFPrimaryStageLoadStatePlayable) {
         self.coverImageView.hidden = YES;
-        if (self.view1Show) {
+        if (self.primaryViewShow) {
             self.emptyView.hidden = NO;
         } else {
             self.emptyView.hidden = YES;
             self.primaryPretty.periodManager.view.backgroundColor = [UIColor blackColor];
         }
     }
-    if (state == ZFPrimaryStageLoadStateStalled && practiceScreen.periodManager.isPleasure && !self.showLoading) {
+    if (state == ZFPrimaryStageLoadStateStalled && practiceScreen.periodManager.itemPleasure && !self.showLoading) {
         [self.laughView startAnimating];
-    } else if ((state == ZFPrimaryStageLoadStateStalled || state == ZFPrimaryStageLoadStatePrepare) && practiceScreen.periodManager.isPleasure && self.showLoading) {
+    } else if ((state == ZFPrimaryStageLoadStateStalled || state == ZFPrimaryStageLoadStatePrepare) && practiceScreen.periodManager.itemPleasure && self.showLoading) {
         [self.laughView startAnimating];
     } else {
         [self.laughView stopAnimating];
@@ -426,7 +426,7 @@
 - (void)veryPractice:(ZFPresentController *)practiceScreen currentTime:(NSTimeInterval)currentTime tableTime:(NSTimeInterval)tableTime {
     [self.portraitControlView veryPractice:practiceScreen currentTime:currentTime tableTime:tableTime];
     [self.lightControlView veryPractice:practiceScreen currentTime:currentTime tableTime:tableTime];
-    if (!self.bottomPresentView.isdragging) {
+    if (!self.bottomPresentView.itemDragging) {
         self.bottomPresentView.value = practiceScreen.percent;
     }
 }
@@ -444,7 +444,7 @@
 - (void)veryPractice:(ZFPresentController *)practiceScreen orientationWillChange:(ZFOrientationObserver *)observer {
     self.portraitControlView.hidden = observer.isFullScreen;
     self.lightControlView.hidden = !observer.isFullScreen;
-    if (practiceScreen.isSmallFloatViewShow) {
+    if (practiceScreen.smallFloatViewShow) {
         self.floatControlView.hidden = observer.isFullScreen;
         self.portraitControlView.hidden = YES;
         if (observer.isFullScreen) {
@@ -510,7 +510,7 @@
     self.firstLabel.text = [NSString stringWithFormat:@"%@ / %@",draggedTime,tableTime];
     [self.portraitControlView sliderValueChanged:value currentTimeString:draggedTime];
     [self.lightControlView sliderValueChanged:value currentTimeString:draggedTime];
-    self.bottomPresentView.isdragging = YES;
+    self.bottomPresentView.itemDragging = YES;
     self.bottomPresentView.value = value;
 
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(hideFastView) object:nil];
@@ -532,7 +532,7 @@
     }];
 }
 
-- (void)errorBtnClick:(UIButton *)sender {
+- (void)errorButtonClick:(UIButton *)sender {
     [self.primaryPretty.periodManager reloadPresent];
 }
 
@@ -555,8 +555,8 @@
     self.lightControlView.tempTp = tempTp;
 }
 
-- (void)setView1Show:(BOOL)show {
-    _view1Show = show;
+- (void)setPrimaryViewShow:(BOOL)show {
+    _primaryViewShow = show;
     if (show) {
         self.bgImgView.hidden = NO;
     } else {
@@ -609,7 +609,7 @@
             NSString *draggedTime = [ZFUtilities convertTimeSecond:self.primaryPretty.tableTime*value];
             [self.lightControlView sliderValueChanged:value currentTimeString:draggedTime];
             self.fastProperView.value = value;
-            self.bottomPresentView.isdragging = YES;
+            self.bottomPresentView.itemDragging = YES;
             self.bottomPresentView.value = value;
             [self cancelAutoView1];
         };
@@ -617,9 +617,9 @@
             @zf_strongify(self)
             [self.lightControlView sliderChangeEnded];
             self.fastProperView.value = value;
-            self.bottomPresentView.isdragging = NO;
+            self.bottomPresentView.itemDragging = NO;
             self.bottomPresentView.value = value;
-            [self autoOutView1];
+            [self primaryStateChangeView];
         };
     }
     return _portraitControlView;
@@ -634,7 +634,7 @@
             NSString *draggedTime = [ZFUtilities convertTimeSecond:self.primaryPretty.tableTime*value];
             [self.portraitControlView sliderValueChanged:value currentTimeString:draggedTime];
             self.fastProperView.value = value;
-            self.bottomPresentView.isdragging = YES;
+            self.bottomPresentView.itemDragging = YES;
             self.bottomPresentView.value = value;
             [self cancelAutoView1];
         };
@@ -642,9 +642,9 @@
             @zf_strongify(self)
             [self.portraitControlView sliderChangeEnded];
             self.fastProperView.value = value;
-            self.bottomPresentView.isdragging = NO;
+            self.bottomPresentView.itemDragging = NO;
             self.bottomPresentView.value = value;
-            [self autoOutView1];
+            [self primaryStateChangeView];
         };
     }
     return _lightControlView;
@@ -692,22 +692,23 @@
         _fastProperView.maximumTrackTintColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.4];
         _fastProperView.minimumTrackTintColor = [UIColor whiteColor];
         _fastProperView.sliderHeight = 2;
-        _fastProperView.isHideSliderBlock = NO;
+        _fastProperView.hideSliderBlock = NO;
     }
     return _fastProperView;
 }
 
-- (UIButton *)errorBtn {
-    if (!_errorBtn) {
-        _errorBtn = [UIButton buttonWithType:UIButtonTypeSystem];
-        [_errorBtn setTitle:@"Net work error. Please try again." forState:UIControlStateNormal];
-        [_errorBtn addTarget:self action:@selector(errorBtnClick:) forControlEvents:UIControlEventTouchUpInside];
-        [_errorBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        _errorBtn.titleLabel.font = [UIFont systemFontOfSize:14.0];
-        _errorBtn.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
-        _errorBtn.hidden = YES;
+- (UIButton *)errorButton {
+    if (!_errorButton) {
+        _errorButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [_errorButton setTitle:@"Net work error. Please try again." forState:UIControlStateNormal];
+        [_errorButton addTarget:self action:@selector(errorButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [_errorButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        _errorButton.titleLabel.font = [UIFont systemFontOfSize:14.0];
+        _errorButton.titleLabel.numberOfLines = 0;
+        _errorButton.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.7];
+        _errorButton.hidden = YES;
     }
-    return _errorBtn;
+    return _errorButton;
 }
 
 - (ZFSliderView *)bottomPresentView {
@@ -717,7 +718,7 @@
         _bottomPresentView.minimumTrackTintColor = [UIColor whiteColor];
         _bottomPresentView.boardTintColor  = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.5];
         _bottomPresentView.sliderHeight = 1;
-        _bottomPresentView.isHideSliderBlock = NO;
+        _bottomPresentView.hideSliderBlock = NO;
     }
     return _bottomPresentView;
 }

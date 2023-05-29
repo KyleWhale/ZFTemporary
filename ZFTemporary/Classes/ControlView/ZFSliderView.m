@@ -212,9 +212,9 @@ static const CGFloat kAnimate = 0.3;
     self.stateView.layer.masksToBounds = YES;
 }
 
-- (void)setIsHideSliderBlock:(BOOL)isHideSliderBlock {
-    _isHideSliderBlock = isHideSliderBlock;
-    if (isHideSliderBlock) {
+- (void)setHideSliderBlock:(BOOL)hideSliderBlock {
+    _hideSliderBlock = hideSliderBlock;
+    if (hideSliderBlock) {
         self.sliderBtn.hidden = YES;
         self.backView.zf_left     = 0;
         self.brownView.zf_left = 0;
@@ -256,7 +256,7 @@ static const CGFloat kAnimate = 0.3;
     self.isLoading = NO;
     self.brownView.hidden = NO;
     self.stateView.hidden = NO;
-    self.sliderBtn.hidden = self.isHideSliderBlock;
+    self.sliderBtn.hidden = self.hideSliderBlock;
     self.loadingBarView.hidden = YES;
     [self.loadingBarView.layer removeAllAnimations];
 }

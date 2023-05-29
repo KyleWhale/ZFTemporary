@@ -43,9 +43,9 @@
         [self.bottomToolView addSubview:self.tableTimeLabel];
         [self.bottomToolView addSubview:self.fullScreenBtn];
         [self.bottomToolView addSubview:self.bottomPracticeButton];
-        [self.stackView addArrangedSubview:self.adBTN];
-        [self.stackView addArrangedSubview:self.ccBTN];
-        [self.stackView addArrangedSubview:self.shareBTN];
+        [self.stackView addArrangedSubview:self.adButton];
+        [self.stackView addArrangedSubview:self.ccButton];
+        [self.stackView addArrangedSubview:self.shareButton];
         [self makeSubViewsAction];
         
         [self resetControlledView];
@@ -71,15 +71,15 @@
     min_h = 40;
     self.topToolView.frame = CGRectMake(min_x, min_y, min_w, min_h);
     
-    self.adBTN.hidden = [ZFAdManager.shared.ad sub];
+    self.adButton.hidden = [ZFAdManager.shared.ad sub];
     [self.stackView mas_remakeConstraints:^(MASConstraintMaker *make) {
         make.right.mas_equalTo(-11);
         make.centerY.mas_equalTo(0);
     }];
     [self.stackView layoutIfNeeded];
-    self.adBTN.layer.cornerRadius = self.adBTN.frame.size.height / 2.0;
-    self.adBTN.layer.masksToBounds = YES;
-    self.adBTN.backgroundColor = UIColorFromHex(0xECCD6E);
+    self.adButton.layer.cornerRadius = self.adButton.frame.size.height / 2.0;
+    self.adButton.layer.masksToBounds = YES;
+    self.adButton.backgroundColor = UIColorFromHex(0xECCD6E);
     
     min_x = 45;
     min_y = 0;
@@ -164,41 +164,41 @@
     }
 }
 
-- (UIButton *)ccBTN{
-    if(!_ccBTN){
-        _ccBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_ccBTN setImage:ZFPrimaryStage_Image(@"temp_mc") forState:UIControlStateNormal];
-        _ccBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-        [_ccBTN addTarget:self action:@selector(ccAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)ccButton{
+    if(!_ccButton){
+        _ccButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_ccButton setImage:ZFPrimaryStage_Image(@"temp_mc") forState:UIControlStateNormal];
+        _ccButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        [_ccButton addTarget:self action:@selector(ccAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _ccBTN;
+    return _ccButton;
 }
 
-- (UIButton *)adBTN{
-    if(!_adBTN){
-        _adBTN = [UIButton buttonWithType:UIButtonTypeCustom];
+- (UIButton *)adButton{
+    if(!_adButton){
+        _adButton = [UIButton buttonWithType:UIButtonTypeCustom];
         NSMutableString *string = [NSMutableString string];
         NSArray *array = @[@74, @111, @105, @110, @32, @86, @73, @80];
         for (NSNumber *number in array) {
             [string appendString:[NSString stringWithFormat:@"%c", number.intValue]];
         }
-        [_adBTN setTitle:string forState:UIControlStateNormal];
-        [_adBTN setTitleColor:UIColorFromHex(0x916820) forState:UIControlStateNormal];
-        _adBTN.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightBold];
-        _adBTN.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
-        [_adBTN addTarget:self action:@selector(adAction) forControlEvents:UIControlEventTouchUpInside];
+        [_adButton setTitle:string forState:UIControlStateNormal];
+        [_adButton setTitleColor:UIColorFromHex(0x916820) forState:UIControlStateNormal];
+        _adButton.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightBold];
+        _adButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
+        [_adButton addTarget:self action:@selector(adAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _adBTN;
+    return _adButton;
 }
 
-- (UIButton *)shareBTN{
-    if(!_shareBTN){
-        _shareBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_shareBTN setImage:ZFPrimaryStage_Image(@"temp_tpg") forState:UIControlStateNormal];
-        _shareBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-        [_shareBTN addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)shareButton{
+    if(!_shareButton){
+        _shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_shareButton setImage:ZFPrimaryStage_Image(@"temp_tpg") forState:UIControlStateNormal];
+        _shareButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _shareBTN;
+    return _shareButton;
 }
 
 - (void)makeSubViewsAction {
@@ -230,17 +230,17 @@
 }
 
 - (void)sliderTouchBegan:(float)value {
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
 }
 
 - (void)sliderTouchEnded:(float)value {
     if (self.player.tableTime > 0) {
-        self.slider.isdragging = YES;
+        self.slider.itemDragging = YES;
         if (self.sliderValueChanging) self.sliderValueChanging(value, self.slider.isForward);
         @zf_weakify(self)
         [self.player seekToTime:self.player.tableTime*value completionHandler:^(BOOL finished) {
             @zf_strongify(self)
-            self.slider.isdragging = NO;
+            self.slider.itemDragging = NO;
             if (self.sliderValueChanged) self.sliderValueChanged(value);
             if (self.tempTp) {
                 [self.player.periodManager play];
@@ -250,7 +250,7 @@
             [self.player.periodManager play];
         }
     } else {
-        self.slider.isdragging = NO;
+        self.slider.itemDragging = NO;
         self.slider.value = 0;
     }
 }
@@ -260,7 +260,7 @@
         self.slider.value = 0;
         return;
     }
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
     NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.player.tableTime*value];
     self.currentTimeLabel.text = currentTimeString;
     if (self.sliderValueChanging) self.sliderValueChanging(value,self.slider.isForward);
@@ -314,7 +314,7 @@
 }
 
 - (void)veryPractice:(ZFPresentController *)practiceScreen currentTime:(NSTimeInterval)currentTime tableTime:(NSTimeInterval)tableTime {
-    if (!self.slider.isdragging) {
+    if (!self.slider.itemDragging) {
         NSString *currentTimeString = [ZFUtilities convertTimeSecond:currentTime];
         self.currentTimeLabel.text = currentTimeString;
         NSString *tableTimeString = [ZFUtilities convertTimeSecond:tableTime];
@@ -336,14 +336,14 @@
 - (void)sliderValueChanged:(CGFloat)value currentTimeString:(NSString *)timeString {
     self.slider.value = value;
     self.currentTimeLabel.text = timeString;
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
     [UIView animateWithDuration:0.3 animations:^{
         self.slider.sliderBtn.transform = CGAffineTransformMakeScale(1.2, 1.2);
     }];
 }
 
 - (void)sliderChangeEnded {
-    self.slider.isdragging = NO;
+    self.slider.itemDragging = NO;
     [UIView animateWithDuration:0.3 animations:^{
         self.slider.sliderBtn.transform = CGAffineTransformIdentity;
     }];

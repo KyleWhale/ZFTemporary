@@ -41,11 +41,11 @@ typedef NS_OPTIONS(NSUInteger, ZFDecidePresentGardenTypes) {
 
 @protocol ZFPortraitOrientationDelegate <NSObject>
 
-- (void)zf_orientationWillChange:(BOOL)isFullScreen;
+- (void)zf_orientationWillChange:(BOOL)fullScreen;
 
-- (void)zf_orientationDidChanged:(BOOL)isFullScreen;
+- (void)zf_orientationDidChanged:(BOOL)fullScreen;
 
-- (void)zf_interationState:(BOOL)isDragging;
+- (void)zf_interationState:(BOOL)dragging;
 
 @end
 

@@ -17,7 +17,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 @property (nonatomic, assign) NSInteger containerViewTag;
 @property (nonatomic, assign) ZFPrimaryStageContainerType containerType;
 @property (nonatomic, strong) ZFFloatView *smallFloatView;
-@property (nonatomic, assign) BOOL isSmallFloatViewShow;
+@property (nonatomic, assign) BOOL smallFloatViewShow;
 @property (nonatomic, nullable) NSIndexPath *playingIndexPath;
 
 @end
@@ -237,7 +237,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
         _notification.willResignActive = ^(ZFPresentNotification * _Nonnull registrar) {
             @zf_strongify(self)
             if (self.isViewControllerDisappear) return;
-            if (self.pauseWhenAppResignActive && self.periodManager.isPleasure) {
+            if (self.pauseWhenAppResignActive && self.periodManager.itemPleasure) {
                 self.pauseByEvent = YES;
             }
             self.orientationObserver.lockedScreen = YES;
@@ -255,7 +255,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
         };
         _notification.oldDeviceUnavailable = ^(ZFPresentNotification * _Nonnull registrar) {
             @zf_strongify(self)
-            if (self.periodManager.isPleasure) {
+            if (self.periodManager.itemPleasure) {
                 [self.periodManager play];
             }
         };
@@ -368,7 +368,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
                 [self stopCurrentCell];
             }
         } else { /// add to window
-            if (!self.isSmallFloatViewShow) {
+            if (!self.smallFloatViewShow) {
                 [self addPlayerViewToSmallFloatView];
             }
         }
@@ -383,11 +383,11 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
         }
         if (!self.stopWhileNotVisible && playerApperaPercent >= self.playerApperaPercent) {
             if (self.containerType == ZFPrimaryStageContainerTypeView) {
-                if (self.isSmallFloatViewShow) {
+                if (self.smallFloatViewShow) {
                     [self addPlayerViewToContainerView:self.containerView];
                 }
             } else if (self.containerType == ZFPrimaryStageContainerTypeCell) {
-                if (self.isSmallFloatViewShow) {
+                if (self.smallFloatViewShow) {
                     [self addPlayerViewToCell];
                 }
             }
@@ -409,7 +409,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
                     [self stopCurrentCell];
                 }
             } else {  /// add to window
-                if (!self.isSmallFloatViewShow) {
+                if (!self.smallFloatViewShow) {
                     [self addPlayerViewToSmallFloatView];
                 }
             }
@@ -513,7 +513,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 }
 
 - (void)addPlayerViewToCell {
-    self.isSmallFloatViewShow = NO;
+    self.smallFloatViewShow = NO;
     self.smallFloatView.hidden = YES;
     UIView *cell = [self.scrollView zf_getCellForIndexPath:self.playingIndexPath];
     self.containerView = [cell viewWithTag:self.containerViewTag];
@@ -527,7 +527,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 }
 
 - (void)addPlayerViewToContainerView:(UIView *)containerView {
-    self.isSmallFloatViewShow = NO;
+    self.smallFloatViewShow = NO;
     self.smallFloatView.hidden = YES;
     self.containerView = containerView;
     [self.containerView addSubview:self.periodManager.view];
@@ -540,7 +540,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 }
 
 - (void)addPlayerViewToSmallFloatView {
-    self.isSmallFloatViewShow = YES;
+    self.smallFloatViewShow = YES;
     self.smallFloatView.hidden = NO;
     [self.smallFloatView addSubview:self.periodManager.view];
     self.periodManager.view.frame = self.smallFloatView.bounds;
@@ -554,7 +554,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 - (void)stopCurrentView {
     if (self.containerView) {
         [self stop];
-        self.isSmallFloatViewShow = NO;
+        self.smallFloatViewShow = NO;
         if (self.smallFloatView) self.smallFloatView.hidden = YES;
     }
 }
@@ -562,7 +562,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 - (void)stopCurrentCell {
     if (self.scrollView.zf_playingIndexPath) {
         [self stop];
-        self.isSmallFloatViewShow = NO;
+        self.smallFloatViewShow = NO;
         self.playingIndexPath = nil;
         if (self.smallFloatView) self.smallFloatView.hidden = YES;
     }
@@ -624,8 +624,8 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
     return self.periodManager.state;
 }
 
-- (BOOL)isPleasure {
-    return self.periodManager.isPleasure;
+- (BOOL)itemPleasure {
+    return self.periodManager.itemPleasure;
 }
 
 - (BOOL)pauseWhenAppResignActive {
@@ -758,7 +758,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
     objc_setAssociatedObject(self, @selector(presentStateChanged), presentStateChanged, OBJC_ASSOCIATION_COPY);
 }
 
-- (void)setPoadNoteStateChanged:(void (^)(id<ZFPresentStateWithback> _Nonnull, ZFPrimaryStageLoadState))LoadNoteStateChanged {
+- (void)setLoadNoteStateChanged:(void (^)(id<ZFPresentStateWithback> _Nonnull, ZFPrimaryStageLoadState))LoadNoteStateChanged {
     objc_setAssociatedObject(self, @selector(LoadNoteStateChanged), LoadNoteStateChanged, OBJC_ASSOCIATION_COPY);
 }
 
@@ -784,12 +784,12 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
     if (!self.periodManager.isPreparedToPlace) return;
     if (viewControllerDisappear) {
         [self removeDeviceOrientationObserver];
-        if (self.periodManager.isPleasure) self.pauseByEvent = YES;
-        if (self.isSmallFloatViewShow) self.smallFloatView.hidden = YES;
+        if (self.periodManager.itemPleasure) self.pauseByEvent = YES;
+        if (self.smallFloatViewShow) self.smallFloatView.hidden = YES;
     } else {
         [self addDeviceOrientationObserver];
         if (self.isPauseByEvent) self.pauseByEvent = NO;
-        if (self.isSmallFloatViewShow) self.smallFloatView.hidden = NO;
+        if (self.smallFloatViewShow) self.smallFloatView.hidden = NO;
     }
 }
 
@@ -1109,7 +1109,7 @@ static NSMutableDictionary <NSString* ,NSNumber *> *_zfPlayRecords;
 - (void)setPlayingIndexPath:(NSIndexPath *)playingIndexPath {
     objc_setAssociatedObject(self, @selector(playingIndexPath), playingIndexPath, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     if (playingIndexPath) {
-        self.isSmallFloatViewShow = NO;
+        self.smallFloatViewShow = NO;
         if (self.smallFloatView) self.smallFloatView.hidden = YES;
         
         UIView *cell = [self.scrollView zf_getCellForIndexPath:playingIndexPath];

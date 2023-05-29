@@ -36,7 +36,7 @@
 @property (nonatomic, assign) CGPoint scrollViewContentOffset;
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
-@property (nonatomic, assign) BOOL isDragging;
+@property (nonatomic, assign) BOOL itemDragging;
 
 @end
 

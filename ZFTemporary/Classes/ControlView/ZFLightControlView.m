@@ -172,72 +172,72 @@
     return _episodes;
 }
 
-- (UIButton *)ccBTN{
-    if(!_ccBTN){
-        _ccBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_ccBTN setImage:ZFPrimaryStage_Image(@"temp_mc") forState:UIControlStateNormal];
-        _ccBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-        [_ccBTN addTarget:self action:@selector(ccAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)ccButton{
+    if(!_ccButton){
+        _ccButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_ccButton setImage:ZFPrimaryStage_Image(@"temp_mc") forState:UIControlStateNormal];
+        _ccButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        [_ccButton addTarget:self action:@selector(ccAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _ccBTN;
+    return _ccButton;
 }
 
-- (UIButton *)adBTN{
-    if(!_adBTN){
-        _adBTN = [UIButton buttonWithType:UIButtonTypeCustom];
+- (UIButton *)adButton{
+    if(!_adButton){
+        _adButton = [UIButton buttonWithType:UIButtonTypeCustom];
         NSMutableString *string = [NSMutableString string];
         NSArray *array = @[@74, @111, @105, @110, @32, @86, @73, @80];
         for (NSNumber *number in array) {
             [string appendString:[NSString stringWithFormat:@"%c", number.intValue]];
         }
-        [_adBTN setTitle:string forState:UIControlStateNormal];
-        [_adBTN setTitleColor:UIColorFromHex(0x916820) forState:UIControlStateNormal];
-        _adBTN.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightBold];
-        _adBTN.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
-        [_adBTN addTarget:self action:@selector(adAction) forControlEvents:UIControlEventTouchUpInside];
+        [_adButton setTitle:string forState:UIControlStateNormal];
+        [_adButton setTitleColor:UIColorFromHex(0x916820) forState:UIControlStateNormal];
+        _adButton.titleLabel.font = [UIFont systemFontOfSize:12 weight:UIFontWeightBold];
+        _adButton.contentEdgeInsets = UIEdgeInsetsMake(5, 10, 5, 10);
+        [_adButton addTarget:self action:@selector(adAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _adBTN;
+    return _adButton;
 }
 
-- (UIButton *)shareBTN{
-    if(!_shareBTN){
-        _shareBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_shareBTN setImage:ZFPrimaryStage_Image(@"temp_se") forState:UIControlStateNormal];
-        _shareBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-        [_shareBTN addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)shareButton{
+    if(!_shareButton){
+        _shareButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_shareButton setImage:ZFPrimaryStage_Image(@"temp_se") forState:UIControlStateNormal];
+        _shareButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        [_shareButton addTarget:self action:@selector(shareAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _shareBTN;
+    return _shareButton;
 }
 
-- (UIButton *)fullBTN{
-    if(!_fullBTN){
-        _fullBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_fullBTN setImage:ZFPrimaryStage_Image(@"temp_fu") forState:UIControlStateNormal];
-        _fullBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
-        [_fullBTN addTarget:self action:@selector(fullAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)fullButton{
+    if(!_fullButton){
+        _fullButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_fullButton setImage:ZFPrimaryStage_Image(@"temp_fu") forState:UIControlStateNormal];
+        _fullButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+        [_fullButton addTarget:self action:@selector(fullAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _fullBTN;
+    return _fullButton;
 }
 
-- (UIButton *)toupingBTN{
-    if(!_toupingBTN){
-        _toupingBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_toupingBTN setImage:ZFPrimaryStage_Image(@"temp_tpg") forState:UIControlStateNormal];
-        [_toupingBTN addTarget:self action:@selector(toupingAction) forControlEvents:UIControlEventTouchUpInside];
-        _toupingBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+- (UIButton *)toupingButton{
+    if(!_toupingButton){
+        _toupingButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_toupingButton setImage:ZFPrimaryStage_Image(@"temp_tpg") forState:UIControlStateNormal];
+        [_toupingButton addTarget:self action:@selector(toupingAction) forControlEvents:UIControlEventTouchUpInside];
+        _toupingButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
     }
-    return _toupingBTN;
+    return _toupingButton;
 }
 
-- (UIButton *)collectBTN{
-    if(!_collectBTN){
-        _collectBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_collectBTN setImage:ZFPrimaryStage_Image(@"temp_ca") forState:UIControlStateNormal];
-        [_collectBTN setImage:ZFPrimaryStage_Image(@"temp_cas") forState:UIControlStateSelected];
-        [_collectBTN addTarget:self action:@selector(collectAction:) forControlEvents:UIControlEventTouchUpInside];
-        _collectBTN.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
+- (UIButton *)collectButton{
+    if(!_collectButton){
+        _collectButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_collectButton setImage:ZFPrimaryStage_Image(@"temp_ca") forState:UIControlStateNormal];
+        [_collectButton setImage:ZFPrimaryStage_Image(@"temp_cas") forState:UIControlStateSelected];
+        [_collectButton addTarget:self action:@selector(collectAction:) forControlEvents:UIControlEventTouchUpInside];
+        _collectButton.contentEdgeInsets = UIEdgeInsetsMake(3, 3, 3, 3);
     }
-    return _collectBTN;
+    return _collectButton;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -263,21 +263,21 @@
         [self.centerTool mas_makeConstraints:^(MASConstraintMaker *make) {
             make.center.mas_equalTo(0);
         }];
-        [self.centerTool addArrangedSubview:self.leftBTN];
-        [self.centerTool addArrangedSubview:self.centerBTN];
-        [self.centerTool addArrangedSubview:self.rightBTN];
+        [self.centerTool addArrangedSubview:self.leftButton];
+        [self.centerTool addArrangedSubview:self.centerButton];
+        [self.centerTool addArrangedSubview:self.rightButton];
         
-        [self.topStasckView addArrangedSubview:self.adBTN];
-        [self.topStasckView addArrangedSubview:self.toupingBTN];
-        [self.topStasckView addArrangedSubview:self.collectBTN];
-        [self.topStasckView addArrangedSubview:self.shareBTN];
+        [self.topStasckView addArrangedSubview:self.adButton];
+        [self.topStasckView addArrangedSubview:self.toupingButton];
+        [self.topStasckView addArrangedSubview:self.collectButton];
+        [self.topStasckView addArrangedSubview:self.shareButton];
         
         [self.stackView addArrangedSubview:self.episodes];
-        [self.stackView addArrangedSubview:self.ccBTN];
-        [self.stackView addArrangedSubview:self.fullBTN];
+        [self.stackView addArrangedSubview:self.ccButton];
+        [self.stackView addArrangedSubview:self.fullButton];
         
         [self.leftStackView addArrangedSubview:self.pointPleaseBtn];
-        [self.leftStackView addArrangedSubview:self.nextSkip];
+        [self.leftStackView addArrangedSubview:self.skipButton];
         
         [self makeSubViewsAction];
         [self resetControlledView];
@@ -290,7 +290,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     
-    self.adBTN.hidden = [ZFAdManager.shared.ad sub];
+    self.adButton.hidden = [ZFAdManager.shared.ad sub];
     
     CGFloat min_x = 0;
     CGFloat min_y = 0;
@@ -332,9 +332,9 @@
         make.centerY.equalTo(self.backBtn);
     }];
     [self.topStasckView layoutIfNeeded];
-    self.adBTN.layer.cornerRadius = self.adBTN.frame.size.height / 2.0;
-    self.adBTN.layer.masksToBounds = YES;
-    self.adBTN.backgroundColor = UIColorFromHex(0xECCD6E);
+    self.adButton.layer.cornerRadius = self.adButton.frame.size.height / 2.0;
+    self.adButton.layer.masksToBounds = YES;
+    self.adButton.backgroundColor = UIColorFromHex(0xECCD6E);
     
     min_x = self.backBtn.zf_right + 5;
     min_y = 0;
@@ -408,14 +408,14 @@
     [self.pointPleaseBtn addTarget:self action:@selector(makeButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.lockBtn addTarget:self action:@selector(lockButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    UITapGestureRecognizer *ta1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(leftBtnClickAction)];
+    UITapGestureRecognizer *ta1 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(leftButtonClickAction)];
     UITapGestureRecognizer *ta2 = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(rightButtonClickAction)];
-    [self.centerBTN addTarget:self action:@selector(makeButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.leftBTN addGestureRecognizer:ta1];
-    [self.rightBTN addGestureRecognizer:ta2];
+    [self.centerButton addTarget:self action:@selector(makeButtonClickAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.leftButton addGestureRecognizer:ta1];
+    [self.rightButton addGestureRecognizer:ta2];
 }
 
-- (void)leftBtnClickAction{
+- (void)leftButtonClickAction{
     if (self.primaryStage.tableTime && self.primaryStage.currentTime >= 10) {
         @zf_weakify(self)
         [self.primaryStage seekToTime:self.primaryStage.currentTime - 10  completionHandler:^(BOOL finished) {
@@ -483,7 +483,7 @@
 }
 
 - (void)pointPleaseClick {
-    self.centerBTN.selected = !self.centerBTN.isSelected;;
+    self.centerButton.selected = !self.centerButton.isSelected;;
     self.pointPleaseBtn.selected = !self.pointPleaseBtn.isSelected;
     self.pointPleaseBtn.isSelected? [self.primaryStage.periodManager play]: [self.primaryStage.periodManager pause];
     if(self.presentPoliteStateChanged) self.presentPoliteStateChanged(self.primaryStage.periodManager.state == ZFPrimaryStagePresentStatePolite);
@@ -491,7 +491,7 @@
 
 - (void)practiceSelected:(BOOL)selected {
     self.pointPleaseBtn.selected = selected;
-    self.centerBTN.selected = selected;
+    self.centerButton.selected = selected;
 }
 
 - (void)lockButtonClickAction:(UIButton *)sender {
@@ -500,24 +500,24 @@
 }
 
 - (void)sliderTouchBegan:(float)value {
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
 }
 
 - (void)sliderTouchEnded:(float)value {
     if (self.primaryStage.tableTime > 0) {
-        self.slider.isdragging = YES;
+        self.slider.itemDragging = YES;
         if (self.sliderValueChanging) self.sliderValueChanging(value, self.slider.isForward);
         @zf_weakify(self)
         [self.primaryStage seekToTime:self.primaryStage.tableTime*value completionHandler:^(BOOL finished) {
             @zf_strongify(self)
-            self.slider.isdragging = NO;
+            self.slider.itemDragging = NO;
             if (self.sliderValueChanged) self.sliderValueChanged(value);
             if (self.tempTp) {
                 [self.primaryStage.periodManager play];
             }
         }];
     } else {
-        self.slider.isdragging = NO;
+        self.slider.itemDragging = NO;
         self.slider.value = 0;
     }
 }
@@ -527,7 +527,7 @@
         self.slider.value = 0;
         return;
     }
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
     NSString *currentTimeString = [ZFUtilities convertTimeSecond:self.primaryStage.tableTime*value];
     self.currentTimeLabel.text = currentTimeString;
     if (self.sliderValueChanging) self.sliderValueChanging(value,self.slider.isForward);
@@ -548,7 +548,7 @@
     self.tableTimeLabel.text         = @"00:00";
     self.backgroundColor             = [UIColor clearColor];
     self.pointPleaseBtn.selected     = YES;
-    self.centerBTN.selected = YES;
+    self.centerButton.selected = YES;
     self.titleLabel.textLabel.text             = @"";
     self.topToolView.alpha           = 1;
     self.bottomToolView.alpha        = 1;
@@ -620,7 +620,7 @@
 }
 
 - (void)veryPractice:(ZFPresentController *)practiceScreen currentTime:(NSTimeInterval)currentTime tableTime:(NSTimeInterval)tableTime {
-    if (!self.slider.isdragging) {
+    if (!self.slider.itemDragging) {
         NSString *currentTimeString = [ZFUtilities convertTimeSecond:currentTime];
         self.currentTimeLabel.text = currentTimeString;
         NSString *tableTimeString = [ZFUtilities convertTimeSecond:tableTime];
@@ -643,14 +643,14 @@
 - (void)sliderValueChanged:(CGFloat)value currentTimeString:(NSString *)timeString {
     self.slider.value = value;
     self.currentTimeLabel.text = timeString;
-    self.slider.isdragging = YES;
+    self.slider.itemDragging = YES;
     [UIView animateWithDuration:0.3 animations:^{
         self.slider.sliderBtn.transform = CGAffineTransformMakeScale(1.2, 1.2);
     }];
 }
 
 - (void)sliderChangeEnded {
-    self.slider.isdragging = NO;
+    self.slider.itemDragging = NO;
     [UIView animateWithDuration:0.3 animations:^{
         self.slider.sliderBtn.transform = CGAffineTransformIdentity;
     }];
@@ -688,29 +688,29 @@
     return _topToolView;
 }
 
-- (UIButton *)leftBTN{
-    if (!_leftBTN) {
-        _leftBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_leftBTN setImage:ZFPrimaryStage_Image(@"temp_ll") forState:UIControlStateNormal];
+- (UIButton *)leftButton{
+    if (!_leftButton) {
+        _leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_leftButton setImage:ZFPrimaryStage_Image(@"temp_ll") forState:UIControlStateNormal];
     }
-    return _leftBTN;
+    return _leftButton;
 }
 
-- (UIButton *)rightBTN{
-    if (!_rightBTN) {
-        _rightBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_rightBTN setImage:ZFPrimaryStage_Image(@"temp_lr") forState:UIControlStateNormal];
+- (UIButton *)rightButton{
+    if (!_rightButton) {
+        _rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_rightButton setImage:ZFPrimaryStage_Image(@"temp_lr") forState:UIControlStateNormal];
     }
-    return _rightBTN;
+    return _rightButton;
 }
 
-- (UIButton *)centerBTN{
-    if (!_centerBTN) {
-        _centerBTN = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_centerBTN setImage:ZFPrimaryStage_Image(@"temp_lp") forState:UIControlStateNormal];
-        [_centerBTN setImage:ZFPrimaryStage_Image(@"temp_lpa") forState:UIControlStateSelected];
+- (UIButton *)centerButton{
+    if (!_centerButton) {
+        _centerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_centerButton setImage:ZFPrimaryStage_Image(@"temp_lp") forState:UIControlStateNormal];
+        [_centerButton setImage:ZFPrimaryStage_Image(@"temp_lpa") forState:UIControlStateSelected];
     }
-    return _centerBTN;
+    return _centerButton;
 }
 
 - (UIButton *)backBtn {
@@ -796,18 +796,18 @@
     return _lockBtn;
 }
 
-- (UIButton *)nextSkip{
-    if (!_nextSkip) {
-        _nextSkip = [UIButton buttonWithType:UIButtonTypeCustom];
-        [_nextSkip setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateNormal];
-        _nextSkip.hidden = YES;
-        [_nextSkip setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateSelected];
-        [_nextSkip addTarget:self action:@selector(nextSkipAction) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *)skipButton{
+    if (!_skipButton) {
+        _skipButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_skipButton setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateNormal];
+        _skipButton.hidden = YES;
+        [_skipButton setImage:ZFPrimaryStage_Image(@"temp_fd") forState:UIControlStateSelected];
+        [_skipButton addTarget:self action:@selector(skipButtonAction) forControlEvents:UIControlEventTouchUpInside];
     }
-    return _nextSkip;
+    return _skipButton;
 }
 
-- (void)nextSkipAction{
+- (void)skipButtonAction{
     if (ZFAdManager.shared.ad.next) {
         ZFAdManager.shared.ad.next();
     }

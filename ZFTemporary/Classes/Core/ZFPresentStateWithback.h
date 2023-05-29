@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NSTimeInterval sleepTime;
 
-@property (nonatomic, readonly) BOOL isPleasure;
+@property (nonatomic, readonly) BOOL itemPleasure;
 
 @property (nonatomic) ZFPrimaryStageScalingMode scalingMode;
 

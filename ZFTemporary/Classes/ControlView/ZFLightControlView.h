@@ -44,24 +44,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) ZFFineScheduleMode fulfilledMode;
 
-@property (nonatomic, strong) UIButton *leftBTN;
-@property (nonatomic, strong) UIButton *centerBTN;
-@property (nonatomic, strong) UIButton *rightBTN;
+@property (nonatomic, strong) UIButton *leftButton;
+@property (nonatomic, strong) UIButton *centerButton;
+@property (nonatomic, strong) UIButton *rightButton;
 @property (nonatomic, strong) UIStackView *centerTool;
 
 @property (nonatomic, strong) UIStackView *topStasckView;
 @property (nonatomic, strong) UIStackView *stackView;
 @property (nonatomic, strong) UIStackView *leftStackView;
 
-@property (nonatomic, strong) UIButton *adBTN;
-@property (nonatomic, strong) UIButton *shareBTN;
-@property (nonatomic, strong) UIButton *ccBTN;
+@property (nonatomic, strong) UIButton *adButton;
+@property (nonatomic, strong) UIButton *shareButton;
+@property (nonatomic, strong) UIButton *ccButton;
 @property (nonatomic, strong) UIButton *episodes;
 
-@property (nonatomic, strong) UIButton *fullBTN;
-@property (nonatomic, strong) UIButton *toupingBTN;
-@property (nonatomic, strong) UIButton *collectBTN;
-@property (nonatomic, strong) UIButton *nextSkip;
+@property (nonatomic, strong) UIButton *fullButton;
+@property (nonatomic, strong) UIButton *toupingButton;
+@property (nonatomic, strong) UIButton *collectButton;
+@property (nonatomic, strong) UIButton *skipButton;
 
 - (void)resetControlledView;
 

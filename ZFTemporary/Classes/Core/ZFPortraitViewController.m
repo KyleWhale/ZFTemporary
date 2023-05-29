@@ -127,8 +127,8 @@
     }
 }
 
-- (void)zf_interationState:(BOOL)isDragging {
-    self.transition.interation = isDragging;
+- (void)zf_interationState:(BOOL)dragging {
+    self.transition.interation = dragging;
 }
 
 #pragma mark - getter

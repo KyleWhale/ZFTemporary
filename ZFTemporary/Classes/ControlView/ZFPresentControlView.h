@@ -23,7 +23,7 @@
 
 @property (nonatomic, strong, readonly) UIImageView *firstImageView;
 
-@property (nonatomic, strong, readonly) UIButton *errorBtn;
+@property (nonatomic, strong, readonly) UIButton *errorButton;
 
 @property (nonatomic, strong, readonly) ZFSliderView *bottomPresentView;
 
@@ -37,7 +37,7 @@
 
 @property (nonatomic, assign) BOOL firstViewAnimated;
 
-@property (nonatomic, assign) BOOL view1Show;
+@property (nonatomic, assign) BOOL primaryViewShow;
 
 @property (nonatomic, assign) BOOL tempTp;
 

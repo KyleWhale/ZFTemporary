@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly, nullable) ZFFloatView *smallFloatView;
 
-@property (nonatomic, assign, readonly) BOOL isSmallFloatViewShow;
+@property (nonatomic, assign, readonly) BOOL smallFloatViewShow;
 
 @property (nonatomic, weak, nullable) UIScrollView *scrollView;
 
